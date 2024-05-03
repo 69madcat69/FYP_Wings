@@ -1,0 +1,83 @@
+.MainLogin {
+  overflow: hidden;
+  background-color: white;
+}
+.MainLogin .container {
+  margin-top: 24px;
+  height: 100%;
+  display: flex;
+}
+
+.MainLogin .image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.MainLogin img {
+  height: 80vh;
+  width: auto;
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+.MainLogin .Log {
+  flex: 1;
+  margin-left: 20px;
+  border-radius: 7px;
+  padding: 20px;
+  max-width: 550px;
+  width: 80%;
+  height: 100%;
+}
+
+.MainLogin .Log .text {
+  margin-top: 5px;
+  margin: 0px 7px;
+}
+
+.MainLogin .Log .text p {
+  margin: 10px 0;
+  color: var(--secondary-text);
+}
+
+.MainLogin .Part-2 {
+  width: calc(100% - 14px);
+  margin-bottom: 30px;
+}
+.MainLogin .Log .input-field {
+  width: 100%;
+  margin: 5px 7px;
+}
+
+.MainLogin .Log input:not([type="checkbox"]) {
+  border: 1px solid black;
+  border-radius: var(--button-radius2);
+  height: 40px;
+  font-size: 20px;
+  background: none;
+  width: 100%;
+  outline: none;
+  padding-left: 10px;
+  box-sizing: border-box;
+}
+.MainLogin .btn {
+  color: #ff8682;
+}
+
+.MainLogin .Login-button button {
+  font-size: 20px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: var(--button-radius2);
+  width: calc(100% - 7px);
+  cursor: pointer;
+  padding: 6px 8px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.MainLogin .SignUp-forward {
+  text-align: center;
+  margin: 0 0 20px;
+}

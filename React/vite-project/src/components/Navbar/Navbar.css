@@ -1,0 +1,39 @@
+header nav {
+  display: flex;
+  width: 100%;
+  height: 20%;
+  background: #eee;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main-color);
+  overflow: auto;
+  height: auto;
+  padding: 20px;
+}
+header img {
+  width: 100%;
+  height: 90px;
+}
+header .leftNav,
+header .rightNav {
+  flex: 1;
+  text-align: center;
+}
+header .leftNav {
+  margin: 0 0px 0 100px;
+  gap: 50px;
+}
+
+header .rightNav {
+  margin: 0 100px 0 0px;
+  gap: 50px;
+  flex: 1;
+  justify-content: flex-end;
+}
+header .active {
+  border: 1px solid var(--main-text);
+  border-radius: var(--button-radius1);
+  background-color: black;
+  color: white;
+  padding: 10px 20px;
+}

@@ -1,0 +1,161 @@
+.FlightBook .container {
+  height: auto;
+  width: 100%;
+  /* width: 90;
+  margin: auto; */
+  align-items: center;
+  background-size: 100% 100%;
+  /* background-image: url(../../assets/4.jpg); */
+}
+.FlightBook .BkImage {
+  z-index: -1;
+  position: absolute;
+  margin: 0;
+}
+.FlightBook .BkImage img {
+  /* height: 60%; */
+}
+.FlightBook .text {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 50px;
+  margin-left: 50px;
+}
+.FlightBook .Search-Flight {
+  position: relative;
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  width: fit-content;
+  margin: auto;
+}
+.FlightBook .Search-Flight .text2 {
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+  position: absolute;
+  top: 0px;
+}
+.FlightBook .top-field {
+  display: flex;
+  gap: 25px;
+}
+.FlightBook .Search-Flight .box:hover .List {
+  opacity: 1;
+  z-index: 999;
+}
+.FlightBook .Search-Flight .box .input {
+  border-radius: 10px;
+  background-color: #f4f4f4;
+}
+.FlightBook .Search-Flight .box input {
+  height: 50px;
+  font-size: 20px;
+  width: 100%;
+  min-width: 50px;
+  padding: 0 24px;
+  border: none;
+  background: none;
+  outline: none;
+}
+.FlightBook .Search-Flight .box .ar-icon {
+  font-size: 25px;
+}
+
+.FlightBook .Search-Flight .buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.FlightBook .Search-Flight .buttons button {
+  background-color: var(--main-color);
+  padding: 15px;
+  border-radius: var(--button-radius2);
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.FlightBook .List {
+  display: block;
+  position: absolute;
+  top: calc(50% + 2px);
+  width: fit-content;
+  box-shadow: 0 7px 15px #00000040;
+  border-radius: 7px;
+  padding: 20px 24px 24px;
+  right: 1%;
+  background: white;
+  z-index: -1;
+  opacity: 0;
+}
+.FlightBook .List h1 {
+  border-bottom: 1px solid #dbdee8;
+  color: #1f212b;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-bottom: 16px;
+}
+.FlightBook .List .row {
+  display: flex;
+  margin-bottom: 14px;
+}
+.FlightBook .List .label {
+  flex-grow: 1;
+  margin-right: 30px;
+  width: 60px;
+}
+.FlightBook .List .label > p:first-child {
+  font-weight: bold;
+}
+.FlightBook .List .row input[type="radio"] {
+  width: 2em;
+  height: 2rem;
+  border-radius: 0.5rem;
+  accent-color: green;
+  border: none;
+  background-color: none;
+}
+
+.FlightBook .List .button {
+  display: grid;
+  width: 100%;
+}
+.FlightBook .List .button button {
+  background-color: var(--main-color);
+  padding: 15px;
+  border-radius: 32px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.FlightBook .Suggestions {
+  margin: auto;
+  margin-top: 100px;
+
+  width: 90%;
+}
+.FlightBook .Suggestions .suggest {
+  /* background-color: white; */
+  display: flex;
+  flex-wrap: wrap;
+}
+.FlightBook .Suggestions .box {
+  width: 31%;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  /* flex-direction: column; */
+  margin: 10px;
+}
+.FlightBook .Suggestions .box h3 {
+  color: #ccc;
+}
+.FlightBook .Suggestions .box img {
+  width: 80px;
+  border-radius: 5px;
+  margin-right: 5px;
+}

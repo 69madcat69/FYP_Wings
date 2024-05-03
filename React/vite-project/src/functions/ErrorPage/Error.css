@@ -1,0 +1,18 @@
+.error {
+  background: url("../assets/subscribe.jpg") center/cover no-repeat fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.error .Main-Page {
+  background-color: #ccc;
+  padding: 50px;
+  border-radius: 7px;
+}
+.error .Return-button button {
+  color: white;
+  background-color: var(--main-color);
+}

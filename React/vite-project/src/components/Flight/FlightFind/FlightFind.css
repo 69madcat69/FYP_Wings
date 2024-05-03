@@ -1,0 +1,232 @@
+.FlightFind .container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.FlightFind .Search-Container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  background-color: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-top: 20px;
+  left: 0;
+}
+.FlightFind .Search-Container .form-inline {
+  display: inline-flex;
+  gap: 25px;
+}
+
+.FlightFind .input {
+  height: 45px;
+  padding: 0 24px;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+}
+.FlightFind input {
+  height: 50px;
+  font-size: 20px;
+  border: none;
+  background: none;
+  width: 100%;
+  outline: none;
+}
+.FlightFind .ar-icon {
+  font-size: 25px;
+}
+.FlightFind .Search {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.FlightFind .Search button {
+  font-size: 20px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: var(--button-radius2);
+  cursor: pointer;
+  padding: 6px 8px;
+}
+.FlightFind .bottom-container {
+  display: flex;
+}
+.FlightFind .Filter-Container {
+  margin-top: 20px;
+  padding: 20px;
+  margin-right: 20px;
+  border-right: 1px solid #ccc;
+}
+.FlightFind .Filter-Container label,
+.FlightFind .Filter-Container h1 {
+  color: black;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.FlightFind .Filter-Container .slider {
+  margin: 10px 0;
+  padding-bottom: 15px;
+  background: none;
+  box-shadow: none;
+  bottom: 0;
+  border-bottom: 1px solid #ccc;
+}
+/* Range Slides */
+.css-1as9v07-MuiSlider-thumb {
+  color: var(--main-color);
+}
+
+/* Style for the rail (track) */
+.MuiSlider-rail {
+  color: #ccc;
+}
+
+/* Style for the track (filled portion of the slider) */
+.MuiSlider-track {
+  color: black;
+}
+/* Currency Sign */
+
+.MuiSlider-valueLabel:after {
+  content: "am";
+  margin-left: 5px;
+}
+.dollar .MuiSlider-valueLabel:after {
+  content: "$";
+  margin-left: 5px;
+}
+/* Range Slides */
+
+@media (min-width: 992px) {
+  .FlightFind .bottom-container {
+    width: 78%;
+  }
+  .FlightFind .Filter-Container {
+    flex: 1;
+  }
+  .FlightFind .Fox {
+    flex: 3;
+  }
+}
+
+.FlightFind .Fox .Sort-Container {
+  display: flex;
+  margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.FlightFind .Sort-Container button {
+  align-items: center;
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 1px solid #dfdfdf;
+  border-right: initial;
+  border-radius: 3px;
+  color: #767676;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  height: 64px;
+  justify-content: space-between;
+  outline: none;
+  padding: 12px 8px;
+  position: relative;
+  width: 25%;
+}
+
+.FlightFind .sort {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.FlightFind .icon-text {
+  margin-left: 5px;
+}
+.FlightFind .Sort-Container .sort h2 {
+  color: black;
+}
+
+.FlightFind .Fox .List-Container {
+  display: flex;
+  position: relative;
+  margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.FlightFind .List-Container .logo {
+  justify-content: center;
+  margin-right: 20px;
+}
+.FlightFind .List-Container .logo img {
+  width: 60px;
+  border-radius: 50%;
+
+  justify-content: center;
+}
+.FlightFind .List-Container .rows-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+.FlightFind .List-Container .row-1 {
+  display: flex;
+}
+.FlightFind .List-Container .num {
+  padding: 5px;
+  font-weight: 400;
+  border: 1px solid var(--main-color);
+  border-radius: 4px;
+  margin-right: 4px;
+}
+.FlightFind .List-Container .row-1 p {
+  font-weight: bold;
+}
+
+.FlightFind .List-Container .row-1 .price {
+  margin-left: auto;
+  color: #112211;
+}
+.FlightFind .List-Container .row-1 .currency::before {
+  content: "$";
+}
+.FlightFind .List-Container .row-1 .currency {
+  color: #ff8682;
+}
+.FlightFind .List-Container .row-2 {
+  display: flex;
+  flex-direction: column;
+  font-weight: 650;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+.FlightFind .List-Container .rows-container .time::after {
+  content: "pm";
+}
+
+.FlightFind .rows-container .stop {
+  color: #777;
+}
+.FlightFind .rows-container .box {
+  display: flex;
+  gap: 50px;
+}
+.FlightFind .rows-container button {
+  font-size: 20px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: var(--button-radius2);
+  cursor: pointer;
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 10px;
+}

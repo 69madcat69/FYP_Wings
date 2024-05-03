@@ -1,0 +1,93 @@
+.FlightList .container {
+  padding-top: var(--padding-top);
+  position: relative;
+  height: 100%;
+  width: 50%;
+}
+.FlightList .plan {
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin: auto;
+  padding: 12px;
+  font-size: 24px;
+  color: black;
+  border-radius: 7px;
+  background-color: white;
+}
+
+.FlightList .plan::after {
+  content: "";
+  position: absolute;
+  background-color: var(--main-color);
+  height: 3px;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+.FlightList .List {
+  display: flex;
+  position: relative;
+  align-items: center;
+  background-color: white;
+  margin-top: 12px;
+  padding: 20px 12px;
+  border-radius: 7px;
+}
+.FlightList .List .logo {
+  justify-content: center;
+}
+.FlightList .List .logo img {
+  width: 60px;
+  justify-content: center;
+}
+.FlightList .List .box {
+  font-size: 18px;
+  padding: 0 6px;
+  text-align: center;
+}
+.FlightList .List .box + .box {
+  padding-right: 20px;
+  border-right: 2px solid #d7e2ee;
+}
+
+.FlightList .List .top-t {
+  color: var(--secondary-text);
+}
+.FlightList .List .bot-t {
+  font-weight: 650;
+}
+.FlightList .List .text {
+  margin: 0 10px;
+}
+.FlightList .List .cols {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  padding-left: 20px;
+}
+.FlightList .List .icon {
+  color: var(--main-color);
+  font-size: 20px;
+  height: 24px;
+  margin: 0 2px;
+}
+.FlightList .List .icon-wrapper {
+  background-color: #ebf6f2;
+  padding: 2px;
+}
+.FlightList .visit {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+}
+.FlightList .visit button {
+  background-color: var(--main-color);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+}
