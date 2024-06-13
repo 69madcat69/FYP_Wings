@@ -12,4 +12,7 @@ urlpatterns = [
 	path('login', views.UserLogin.as_view(), name='login'),
 	path('logout', views.UserLogout.as_view(), name='logout'),
 	path('user', views.UserView.as_view(), name='user'),
+ 	path('flightsearch', views.FlightSearchView, name='flightsearch'),
+    # path('getflight', views.DuffelAPIView.as_view(), name='getflight'),
+    path('getflight', get_aircraft, name='get_aircraft'),
 ]

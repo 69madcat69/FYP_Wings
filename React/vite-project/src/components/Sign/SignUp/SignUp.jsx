@@ -12,33 +12,38 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
   const navigateTo = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/register",
         {
-          firstName,
-          lastName,
+          first_name: firstName,
+          last_name: lastName,
           email,
-          phoneNumber,
+          phone: phoneNumber,
           password,
-          confirmPassword,
         },
         {
-          withCredentials: true, // Include credentials in the request
+          withCredentials: true,
         }
       );
-      console.log("Signup successful:", response.data);
       setSuccess(true);
-      // Redirect to login page after successful registration
       navigateTo("/login");
     } catch (error) {
-      console.error("Signup failed:", error);
+      setError(
+        "Signup failed: " + (error.response?.data?.detail || error.message)
+      );
     }
   };
+
   const location = useLocation();
   const path = location.pathname;
 
@@ -84,7 +89,6 @@ const SignUp = () => {
                   <label>Email</label>
                   <input
                     type="email"
-                    id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="john.doe@gmail.com"
@@ -107,7 +111,6 @@ const SignUp = () => {
                   <label>Password</label>
                   <input
                     type="password"
-                    id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="*********"
@@ -127,8 +130,8 @@ const SignUp = () => {
               </div>
               <div className="check">
                 <p>
-                  <input type="checkbox" name="terms" id="terms" required />I
-                  agree to all the <span className="btn"> Terms </span>and{" "}
+                  <input type="checkbox" name="terms" required /> I agree to all
+                  the <span className="btn"> Terms </span> and{" "}
                   <span className="btn">Privacy Policies</span>
                 </p>
               </div>
@@ -137,12 +140,13 @@ const SignUp = () => {
               </div>
             </form>
           ) : (
-            console.log("nice")
+            <p>Signup successful! Redirecting to login...</p>
           )}
+          {error && <p className="error">{error}</p>}
           <div className="Login-forward">
             Already have an account?
             <Link to="/Login" selected={"/Login" === path}>
-              <a className="btn"> Login</a>
+              <span className="btn"> Login</span>
             </Link>
           </div>
         </div>

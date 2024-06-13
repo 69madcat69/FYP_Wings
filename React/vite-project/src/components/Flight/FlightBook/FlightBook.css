@@ -76,7 +76,7 @@
   cursor: pointer;
 }
 
-.FlightBook .List {
+/* .FlightBook .List {
   display: block;
   position: absolute;
   top: calc(50% + 2px);
@@ -88,8 +88,8 @@
   background: white;
   z-index: -1;
   opacity: 0;
-}
-.FlightBook .List h1 {
+} */
+.List h1 {
   border-bottom: 1px solid #dbdee8;
   color: #1f212b;
   font-size: 20px;
@@ -97,19 +97,19 @@
   margin-bottom: 10px;
   padding-bottom: 16px;
 }
-.FlightBook .List .row {
+.List .row {
   display: flex;
   margin-bottom: 14px;
 }
-.FlightBook .List .label {
+.List .label {
   flex-grow: 1;
   margin-right: 30px;
   width: 60px;
 }
-.FlightBook .List .label > p:first-child {
+.List .label > p:first-child {
   font-weight: bold;
 }
-.FlightBook .List .row input[type="radio"] {
+.List .row input[type="radio"] {
   width: 2em;
   height: 2rem;
   border-radius: 0.5rem;
@@ -118,11 +118,11 @@
   background-color: none;
 }
 
-.FlightBook .List .button {
+.List .button {
   display: grid;
   width: 100%;
 }
-.FlightBook .List .button button {
+.List .button button {
   background-color: var(--main-color);
   padding: 15px;
   border-radius: 32px;

@@ -195,9 +195,10 @@
 .FlightFind .List-Container .row-1 .price {
   margin-left: auto;
   color: #112211;
+  flex: flex-end;
 }
 .FlightFind .List-Container .row-1 .currency::before {
-  content: "$";
+  content: "RM";
 }
 .FlightFind .List-Container .row-1 .currency {
   color: #ff8682;
@@ -208,9 +209,6 @@
   font-weight: 650;
   border-bottom: 1px solid #ccc;
   padding-bottom: 10px;
-}
-.FlightFind .List-Container .rows-container .time::after {
-  content: "pm";
 }
 
 .FlightFind .rows-container .stop {

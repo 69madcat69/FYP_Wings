@@ -1,5 +1,6 @@
 /*eslint-disable */
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { IoMdArrowDropdown } from "react-icons/io";
@@ -8,44 +9,11 @@ import "./FlightFind.css";
 import { FaCoins } from "react-icons/fa";
 import { IoStar } from "react-icons/io5";
 import { GiCommercialAirplane } from "react-icons/gi";
-import { FaPlaneDeparture } from "react-icons/fa";
-import Logo from "../../assets/L1.jpg";
-// import Axios from "../../../functions/Axios.jsx";
-import Fly1 from "../../assets/BUDGETAIR.png";
-
-import {
-  FlightProvider,
-  RoomContext,
-} from "../../../functions/FlightProvider/FlightProvider.jsx";
-// import { useForm } from "react-hook-form";
 
 const FlightFind = () => {
-  const { flights } = useContext(RoomContext);
-
-  // Start Search
-  // const { handleSubmit, control } = useForm();
-  // const defaultvalues = {
-  //   FlightId: "",
-  //   DepartureL: "",
-  //   ArrivalL: "",
-  //   DepartureD: "",
-  //   ArrivalD: "",
-  // };
-  // const FindForm = (data) => {
-  //   Axios.post(`Project/`, {
-  //     FlightId: data.FlightId,
-  //     DepartureL: data.DepartureL,
-  //     ArrivalL: data.ArrivalL,
-  //     DepartureD: data.DepartureD,
-  //     ArrivalD: data.ArrivalD,
-  //   });
-  // };
-  // End Search
-
-  /* Top-container Start */
-
-  const [originCity, setOriginCity] = useState("");
-  const [travelCity, setTravelCity] = useState("");
+  const [flights, setFlights] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [departDate, setDepartDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -54,41 +22,74 @@ const FlightFind = () => {
       .toISOString()
       .slice(0, 10)
   );
+  const [originCity, setOriginCity] = useState("");
+  const [travelCity, setTravelCity] = useState("");
+  const [minPrice, setMinPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState(4000);
+  const [departure, setDeparture] = useState([1, 12]);
+  const formatDuration = (duration) => {
+    // Check if the input is in the correct format
+    const regex = /^PT(\d+H)?(\d+M)?$/;
 
-  // Event handlers to update state when input fields change
-  const handleOriginCityChange = (event) => {
-    console.log(event.target.value);
-    setOriginCity(event.target.value);
+    // Extract hours and minutes
+    const hoursMatch = duration.match(/(\d+)H/);
+    const minutesMatch = duration.match(/(\d+)M/);
+
+    // Get the hours and minutes values
+    const hours = hoursMatch ? hoursMatch[1] : "0";
+    const minutes = minutesMatch ? minutesMatch[1] : "0";
+
+    // Format the duration
+    const formattedDuration = `${hours}h ${minutes}m`;
+
+    return formattedDuration;
   };
 
-  const handleTravelCityChange = (event) => {
-    setTravelCity(event.target.value);
+  const formatTime = (timeString) => {
+    const date = new Date(timeString);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
   };
-
-  const handleDepartDateChange = (event) => {
-    setDepartDate(event.target.value);
-  };
-
-  const handleArrivalDateChange = (event) => {
-    setArrivalDate(event.target.value);
-  };
-  // Might Delete Start
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-
-  const handleSearch = () => {
-    const results = flights.filter((flight) =>
-      flight.FullStartPlace.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setSearchResults(results);
+  const convertToRinggit = (amountInDollars) => {
+    return (amountInDollars * 4.67).toFixed(2);
   };
 
   useEffect(() => {
-    handleSearch();
-  }, [searchTerm]);
-  // Might Delete End
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/getflight",
+          {
+            params: {
+              origin: "PEK",
+              destination: "HND",
+              departure_date: "2024-12-01",
+            },
+          }
+        );
+        setFlights(response.data);
+        console.log("AHMED HAS C");
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Function to handle form submission
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log("Origin City:", originCity);
@@ -98,46 +99,18 @@ const FlightFind = () => {
     // You can perform further actions such as sending data to server, etc.
   };
 
-  // Start Date
-  useEffect(() => {
-    const arrivalDate = new Date(departDate);
-    const formattedArrivalDate = arrivalDate.toISOString().slice(0, 10);
-    setArrivalDate(formattedArrivalDate);
-  }, [departDate]);
-  // End Date
-
-  // Start Slide Range
-  const minFlightPrice = Math.min(...flights.map((flight) => flight.price));
-  const maxFlightPrice = Math.max(...flights.map((flight) => flight.price));
-  const [minPrice, setMinPrice] = useState(minFlightPrice);
-  const [maxPrice, setMaxPrice] = useState(maxFlightPrice);
-  useEffect(() => {
-    // Calculate min and max prices
-    const minFlightPrice = Math.min(...flights.map((flight) => flight.price));
-    const maxFlightPrice = Math.max(...flights.map((flight) => flight.price));
-    setMinPrice(minFlightPrice);
-    setMaxPrice(maxFlightPrice);
-  }, [flights]);
-
-  const [value, setValue] = useState([1000, 4000]);
-  const handleChange = (event, newValue) => {
-    if (newValue[0] > newValue[1]) {
-      setValue([newValue[1], newValue[0]]);
-    } else {
-      setValue(newValue);
-    }
+  const handlePriceChange = (event, newValue) => {
+    setMinPrice(newValue[0]);
+    setMaxPrice(newValue[1]);
   };
 
-  const [departure, setDeparture] = useState([1, 12]);
-  const handleChange2 = (event, newDeparture) => {
+  const handleDepartureChange = (event, newDeparture) => {
     setDeparture(newDeparture);
   };
-  // End Slide Range
 
   return (
     <div className="FlightFind">
       <div className="container">
-        {/* Top-container Start */}
         <div className="Search-Container">
           <form className="form-inline" onSubmit={handleSubmit}>
             <div className="box">
@@ -146,8 +119,8 @@ const FlightFind = () => {
                 <input
                   type="text"
                   placeholder="Enter Origin City"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={originCity}
+                  onChange={(e) => setOriginCity(e.target.value)}
                 />
               </div>
             </div>
@@ -158,8 +131,8 @@ const FlightFind = () => {
                   type="text"
                   placeholder="Enter Travel City"
                   value={travelCity}
-                  onChange={handleTravelCityChange}
-                ></input>
+                  onChange={(e) => setTravelCity(e.target.value)}
+                />
               </div>
             </div>
             <div className="box">
@@ -190,13 +163,12 @@ const FlightFind = () => {
               </div>
             </div>
             <div className="Search">
-              <button type="submit" onClick={handleSearch}>
+              <button type="submit">
                 <IoIosSearch />
               </button>
             </div>
           </form>
         </div>
-        {/* Top-container End */}
         <div className="bottom-container">
           <div className="Filter-Container">
             <form>
@@ -207,17 +179,14 @@ const FlightFind = () => {
                   <Slider
                     className="price-range"
                     getAriaLabel={() => "Price range"}
-                    value={[minPrice, maxPrice]} // Set value as an array containing both min and max prices
-                    onChange={(event, newValue) => {
-                      setMinPrice(newValue[0]);
-                      setMaxPrice(newValue[1]);
-                    }}
+                    value={[minPrice, maxPrice]}
+                    onChange={handlePriceChange}
                     step={10}
-                    min={minFlightPrice} // Set min to minFlightPrice
-                    max={maxFlightPrice} // Set max to maxFlightPrice
+                    min={1000}
+                    max={4000}
                     marks={[
-                      { value: minFlightPrice, label: `$${minFlightPrice}` },
-                      { value: maxFlightPrice, label: `$${maxFlightPrice}` },
+                      { value: 1000, label: "$1000" },
+                      { value: 4000, label: "$4000" },
                     ]}
                     valueLabelDisplay="auto"
                   />
@@ -229,7 +198,7 @@ const FlightFind = () => {
                   className="departure-range"
                   getAriaLabel={() => "Departure range"}
                   value={departure}
-                  onChange={handleChange2}
+                  onChange={handleDepartureChange}
                   min={0}
                   max={12}
                   marks={[
@@ -271,67 +240,64 @@ const FlightFind = () => {
                   <p>$99</p>
                 </div>
               </button>
-              <button>
-                <div className="sort">
-                  <h2>
-                    <FaPlaneDeparture />
-                    <span className="icon-text">Departure Time </span>{" "}
-                    <IoMdArrowDropdown />
-                  </h2>
-                </div>
-              </button>
             </div>
-            {searchResults.map((flight, index) => (
+            {flights.offers.map((offer, index) => (
               <div key={index} className="List-Container">
                 <div className="logo">
-                  <img src={Fly1} alt="Flight Logo" />
+                  <img src={offer.owner.logo_symbol_url} alt="Flight Logo" />
                 </div>
                 <div className="rows-container">
                   <div className="row-1">
                     <p>
-                      <span className="num">4.2</span> {flight.name}
+                      <span className="num">4.2</span> {offer.owner.name}
                     </p>
                     <p className="price">
                       starting from
                       <br />
-                      <span className="currency">{flight.price}</span>
+                      <span className="currency">
+                        {convertToRinggit(offer.total_amount)}
+                      </span>
                     </p>
                   </div>
                   <div className="row-2">
+                    <div className="slice-info"></div>
                     <div className="box">
                       <p className="flightD">
-                        <span className="time">{flight.firstdate1} </span> -
-                        <span className="time"> {flight.firstdate2} </span>
+                        <span className="time">
+                          {formatTime(
+                            offer.offerslices[0].segment[0].departing_at
+                          )}
+                        </span>{" "}
+                        -{"\t"}
+                        <span className="time">
+                          {formatTime(
+                            offer.offerslices[0].segment[0].arriving_at
+                          )}
+                        </span>
                       </p>
-                      <p className="stop">non stop</p>
+                      <p className="stop"> Direct</p>
                       <p>
-                        {flight.timetaken}
+                        {formatDuration(offer.offerslices[0].duration)}
                         <br />
-                        {flight.StartPlace}-{flight.Transit}
+                        <p className="stop">
+                          {flights.slices[0].origin.iata_code}-
+                          {flights.slices[0].destination.iata_code}
+                        </p>
                       </p>
                     </div>
-                    <div className="box">
-                      <p className="flightD">
-                        <span className="time">{flight.enddate1} </span> -
-                        <span className="time"> {flight.enddate2} </span>
-                      </p>
-                      <p className="stop">non stop</p>
-                      <p>
-                        {flight.timetaken2} <br />
-                        {flight.Transit}-{flight.EndPlace}
-                      </p>
+                    <div className="visit">
+                      <button>View Deals</button>
                     </div>
                   </div>
-                  <div className="visit">
-                    <button>View Deals</button>
-                  </div>
-                </div>
+                </div>{" "}
               </div>
             ))}
+            )
           </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default FlightFind;

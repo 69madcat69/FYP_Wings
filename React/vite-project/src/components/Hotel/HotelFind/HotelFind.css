@@ -1,0 +1,241 @@
+.HotelFind .container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.HotelFind .Search-Container {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  background-color: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-top: 20px;
+  left: 0;
+}
+.HotelFind .Search-Container .form-inline {
+  display: inline-flex;
+  gap: 25px;
+}
+
+.HotelFind .input {
+  height: 45px;
+  padding: 0 24px;
+  border-radius: 10px;
+  background-color: #f4f4f4;
+}
+.HotelFind input {
+  height: 50px;
+  font-size: 20px;
+  border: none;
+  background: none;
+  width: 100%;
+  outline: none;
+}
+.HotelFind .ar-icon {
+  font-size: 25px;
+}
+.HotelFind .Search {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.HotelFind .Search button {
+  font-size: 20px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: var(--button-radius2);
+  cursor: pointer;
+  padding: 6px 8px;
+}
+.HotelFind .bottom-container {
+  display: flex;
+}
+.HotelFind .Filter-Container {
+  margin-top: 20px;
+  padding: 20px;
+  margin-right: 20px;
+  border-right: 1px solid #ccc;
+}
+.HotelFind .Filter-Container label,
+.HotelFind .Filter-Container h1 {
+  color: black;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+.HotelFind .Filter-Container .slider {
+  margin: 10px 0;
+  padding-bottom: 15px;
+  background: none;
+  box-shadow: none;
+  bottom: 0;
+  border-bottom: 1px solid #ccc;
+}
+/* Range Slides */
+.css-1as9v07-MuiSlider-thumb {
+  color: var(--main-color);
+}
+
+/* Style for the rail (track) */
+.MuiSlider-rail {
+  color: #ccc;
+}
+
+/* Style for the track (filled portion of the slider) */
+.MuiSlider-track {
+  color: black;
+}
+/* Currency Sign */
+
+.MuiSlider-valueLabel:after {
+  content: "am";
+  margin-left: 5px;
+}
+.dollar .MuiSlider-valueLabel:after {
+  content: "$";
+  margin-left: 5px;
+}
+/* Range Slides */
+
+@media (min-width: 992px) {
+  .HotelFind .bottom-container {
+    width: 78%;
+  }
+  .HotelFind .Filter-Container {
+    flex: 1;
+  }
+  .HotelFind .Fox {
+    flex: 3;
+  }
+}
+
+.HotelFind .Fox .Sort-Container {
+  display: flex;
+  margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.HotelFind .Sort-Container button {
+  align-items: center;
+  background-clip: padding-box;
+  background-color: #fff;
+  border: 1px solid #dfdfdf;
+  border-right: initial;
+  border-radius: 3px;
+  color: #767676;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  height: 64px;
+  justify-content: space-between;
+  outline: none;
+  padding: 12px 8px;
+  position: relative;
+  width: 33%;
+  flex-direction: column;
+}
+
+.HotelFind .sort {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.HotelFind .icon-text {
+  margin-left: 5px;
+}
+.HotelFind .Sort-Container .sort h2 {
+  color: black;
+}
+
+.HotelFind .Fox .List-Container {
+  display: flex;
+  position: relative;
+  margin-top: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+.HotelFind .List-Container .logo {
+  justify-content: center;
+  margin-right: 20px;
+  width: 20%;
+}
+.HotelFind .List-Container .logo img {
+  width: 100%;
+  justify-content: center;
+}
+.HotelFind .List-Container .rows-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+.HotelFind .List-Container .row-1 {
+  display: flex;
+}
+.HotelFind .List-Container .num {
+  padding: 5px;
+  font-weight: 400;
+  border: 1px solid var(--main-color);
+  border-radius: 4px;
+  margin-right: 4px;
+}
+.HotelFind .List-Container .row-1 p {
+  font-weight: bold;
+}
+
+.HotelFind .List-Container .row-1 .price {
+  margin-left: auto;
+  color: #112211;
+}
+.HotelFind .List-Container .row-1 .currency::before {
+  content: "$";
+}
+.HotelFind .List-Container .row-1 .currency {
+  color: #ff8682;
+  font-size: 20px;
+}
+.HotelFind .List-Container .row-1 .currency::after {
+  content: "/night";
+  font-size: 14px;
+}
+.HotelFind .List-Container .row-2 {
+  display: flex;
+  flex-direction: column;
+  font-weight: 650;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+.HotelFind .List-Container .rows-container .HLoc {
+  margin-right: 20px;
+}
+
+.HotelFind .rows-container .stop {
+  color: #777;
+}
+.HotelFind .rows-container .box {
+  display: flex;
+  gap: 50px;
+  margin-bottom: 20px;
+}
+.HotelFind .rows-container .box .flightD {
+  display: flex;
+}
+.HotelFind .rows-container button {
+  font-size: 20px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: var(--button-radius2);
+  cursor: pointer;
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 10px;
+}

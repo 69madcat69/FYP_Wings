@@ -15,7 +15,7 @@ const FlightList = () => {
     <body>
       <div className="FlightList">
         <div className="container">
-          <h1>Tickets/Bookings</h1>
+          <h1>Tickets</h1>
           <div className="plan">
             <MdFlight /> Flights
           </div>

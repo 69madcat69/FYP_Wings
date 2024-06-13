@@ -27,7 +27,7 @@ const Navbar = (props) => {
               <MdFlight /> Find Flight
             </a>
           </Link>
-          <Link to="/SignUp" selected={"/SignUp" === path}>
+          <Link to="/HotelBook" selected={"/HotelBook" === path}>
             <a href="#">
               <FaHotel /> Find Hotel
             </a>

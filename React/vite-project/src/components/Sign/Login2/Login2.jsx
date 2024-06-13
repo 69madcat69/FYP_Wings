@@ -1,22 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Image from "../../assets/1.jpg";
 import axios from "axios";
+import { Alert } from "@mui/material";
 import "./Login2.css";
+import Image from "../../assets/1.jpg";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
 
-const client = axios.create({
-  baseURL: "http://127.0.0.1:8000",
-});
-
-function Login() {
+function Login2() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigateTo = useNavigate();
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/user");
+        if (response.status === 200) {
+          setIsAuthenticated(true);
+        }
+      } catch (err) {
+        setIsAuthenticated(false);
+      }
+    };
+    checkAuthStatus();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -27,78 +39,80 @@ function Login() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    client
-      .post("/api/login", {
-        email: email,
-        password: password,
-      })
-      .then((res) => {
-        setIsAuthenticated(true);
-        // Redirect to findflight page after successful login
-        navigateTo("/");
-      })
-      .catch((err) => {
-        console.error("Login failed:", err);
-        // Handle login error
+    try {
+      console.log("Attempting login with:", email, password); // Debugging log
+      const response = await axios.post("http://127.0.0.1:8000/api/login", {
+        email,
+        password,
       });
+      console.log("Login response:", response); // Debugging log
+      if (response.status === 200) {
+        setIsAuthenticated(true);
+        navigateTo("/Profile");
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+      setError("Email or password is incorrect.");
+    }
   };
 
-  if (!isAuthenticated) {
-    return (
-      <div className="MainLogin">
-        <div className="container">
-          <div className="Log">
-            <div className="text">
-              <h1>Login</h1>
-              <p>Login to access your account.</p>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="Part-2">
-                <div className="input-field">
-                  <label>Email</label>
-                  <input
-                    type="text"
-                    name="email"
-                    placeholder="john.doe@gmail.com"
-                    value={email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="input-field">
-                  <label>Password</label>
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="*********"
-                    value={password}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="Login-button">
-                <button type="submit">Login</button>
-              </div>
-            </form>
-            <div className="SignUp-forward">
-              Don't have an account?{" "}
-              <Link to="/SignUp" className="btn">
-                Sign Up
-              </Link>
-            </div>
+  if (isAuthenticated) {
+    return navigateTo("/Profile");
+  }
+
+  return (
+    <div className="MainLogin">
+      <div className="container">
+        <div className="Log">
+          <div className="text">
+            <h1>Login</h1>
+            <p>Login to access your account.</p>
           </div>
-          <div className="image">
-            <img src={Image} alt="login" />
+          <form onSubmit={handleSubmit}>
+            <div className="Part-2">
+              <div className="input-field">
+                <label>Email</label>
+                <input
+                  type="text"
+                  name="email"
+                  placeholder="john.doe@gmail.com"
+                  value={email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+              <div className="input-field">
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="*********"
+                  value={password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="Login-button">
+              <button type="submit">Login</button>
+            </div>
+          </form>
+          {error && <Alert severity="error">{error}</Alert>}
+          <div className="SignUp-forward">
+            Don't have an account?{" "}
+            <Link to="/SignUp" className="btn">
+              Sign Up
+            </Link>
           </div>
         </div>
+        <div className="image">
+          <img src={Image} alt="login" />
+        </div>
       </div>
-    );
-  } else {
-    return <div>User is authenticated</div>;
-  }
+    </div>
+  );
 }
 
-export default Login;
+export default Login2;

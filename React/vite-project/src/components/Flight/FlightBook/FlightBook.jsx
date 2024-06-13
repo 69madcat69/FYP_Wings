@@ -1,20 +1,39 @@
-/* eslint-disable */
+/*eslint-disable*/
 import React, { useState, useEffect } from "react";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { FaPaperPlane } from "react-icons/fa";
 import "./FlightBook.css";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 import hotelData from "../../../functions/HotelData";
 import KL from "../../assets/KL.jpg";
 import IncDec from "../../../functions/IncDec/IncDec";
 import bkground from "../../assets/4.jpg";
-const FlightBook = () => {
-  const [suggestions, setSuggestions] = useState([]);
-  const [originCity, setOriginCity] = useState("Kuala Lumpur, Malaysia (KUL)");
-  const navigate = useNavigate();
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { useTheme } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/system";
+import Paper from "@mui/material/Paper";
+import {
+  Autocomplete,
+  Popover,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+} from "@mui/material";
 
+const FlightBook = () => {
+  const theme = useTheme();
+  const [personName, setPersonName] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [originCity, setOriginCity] = useState("");
   const [travelCity, setTravelCity] = useState("");
+  const [showReturnDate, setShowReturnDate] = useState(true); // Add state to control the visibility of the return date field
   const [departDate, setDepartDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -23,27 +42,36 @@ const FlightBook = () => {
       .toISOString()
       .slice(0, 10)
   );
+  const [tripType, setTripType] = useState("Return");
+  const navigate = useNavigate();
+
   useEffect(() => {
     setSuggestions(hotelData);
   }, []);
-  useEffect(() => {
-    setArrivalDate(() => {
-      const newDate = new Date(departDate);
-      newDate.setDate(newDate.getDate() + 7);
-      return newDate.toISOString().slice(0, 10);
-    });
-  }, [departDate]);
 
-  const handleOriginCityChange = (event) => {
-    console.log(event.target.value);
-    setOriginCity(event.target.value);
+  useEffect(() => {
+    if (tripType === "Return") {
+      setArrivalDate(() => {
+        const newDate = new Date(departDate);
+        newDate.setDate(newDate.getDate() + 7);
+        return newDate.toISOString().slice(0, 10);
+      });
+    }
+  }, [departDate, tripType]);
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(typeof value === "string" ? value.split(",") : value);
   };
-  const handleShowFlights = () => {
-    // Navigate to the FlightFind page when the button is clicked
-    navigate("/FlightFind");
+
+  const handleOriginCityChange = (event, value) => {
+    setOriginCity(value.label);
   };
-  const handleTravelCityChange = (event) => {
-    setTravelCity(event.target.value);
+
+  const handleTravelCityChange = (event, value) => {
+    setTravelCity(value.label);
   };
 
   const handleDepartDateChange = (event) => {
@@ -53,20 +81,168 @@ const FlightBook = () => {
   const handleArrivalDateChange = (event) => {
     setArrivalDate(event.target.value);
   };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Origin City:", originCity);
-    console.log("Travel City:", travelCity);
-    console.log("Departure Date:", departDate);
-    console.log("Arrival Date:", arrivalDate);
+
+  const handleTripTypeChange = (event) => {
+    const { value } = event.target;
+    setTripType(value);
+    setShowReturnDate(value === "Return"); // Update the visibility state based on the selected trip type
   };
-  const CountryName = "Malaysia";
-  const CityName = "Kuala Lumpur";
-  const Type = ["Flights", "Hotels"];
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const flightData = {
+      origin_city: originCity,
+      travel_city: travelCity,
+      depart_date: departDate,
+      // arrival_date: tripType === "Return" ? arrivalDate : null,
+      // passengers: 1,
+      // travel_class: "Economy",
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/flightsearch",
+        flightData
+      );
+      console.log("Response:", response.data);
+      navigate(
+        `/FlightFind/${originCity}/${travelCity}/${departDate}
+        // /{tripType === "Return" ? arrivalDate : "null"
+        }`
+      );
+    } catch (error) {
+      console.error("There was an error submitting the form:", error);
+    }
+  };
+
+  const styles = {
+    input: {
+      borderRadius: "10px",
+      backgroundColor: "#f4f4f4",
+      width: "250px",
+    },
+    select: {
+      height: "40px",
+      fontSize: "16px",
+      width: "100%",
+      padding: "10px 14px",
+      border: "none",
+      background: "none",
+      outline: "none",
+    },
+  };
+
+  const textFieldStyle = {
+    "& .MuiOutlinedInput-root": {
+      height: "50px",
+      fontSize: "14px",
+    },
+    "& .MuiInputLabel-root": {
+      fontSize: "14px",
+    },
+  };
+
+  const PassengersClassDropdown = () => {
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? "simple-popover" : undefined;
+
+    return (
+      <div>
+        <Box sx={styles.input} onClick={handleClick}>
+          <TextField
+            fullWidth
+            value="1 Passenger Economy"
+            readOnly
+            variant="outlined"
+            sx={{ input: styles.select }}
+          />
+        </Box>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <div className="List" style={{ padding: "20px" }}>
+            <h1>Passengers</h1>
+            <div className="row">
+              <div className="label">
+                <p>Adults</p>
+                <p>12+ years</p>
+              </div>
+              <IncDec />
+            </div>
+            <div className="row">
+              <div className="label">
+                <p>Child</p>
+                <p>2-11 years</p>
+              </div>
+              <IncDec minValue={0} />
+            </div>
+            <div className="row">
+              <div className="label">
+                <p>Infant</p>
+                <p>&lt;2 years</p>
+              </div>
+              <IncDec minValue={0} />
+            </div>
+            <h1>Class</h1>
+            <div className="row">
+              <div className="label">
+                <p>Economy</p>
+              </div>
+              <input type="radio" name="class" defaultChecked />
+            </div>
+            <div className="row">
+              <div className="label">
+                <p>Premium</p>
+              </div>
+              <input type="radio" name="class" />
+            </div>
+            <div className="button">
+              <button onClick={handleClose}>Confirm</button>
+            </div>
+          </div>
+        </Popover>
+      </div>
+    );
+  };
+  const StyledPaper = styled(Paper)(({ theme }) => ({
+    "& .MuiAutocomplete-listbox": {
+      display: "block",
+    },
+  }));
+
+  //airport name, country name      iata_code
+  const countries = [
+    { airport: "PEK", country: "Andorra", iata_code: "376" },
+    {
+      airport: "DEL",
+      country: "United Arab Emirates",
+      iata_code: "971",
+    },
+    { airport: "AF", country: "Afghanistan", iata_code: "93" },
+  ];
+
   return (
     <div className="FlightBook">
       <div className="BkImage">
-        <img src={bkground} />
+        <img src={bkground} alt="Background" />
       </div>
       <div className="container">
         <div className="text">
@@ -82,101 +258,125 @@ const FlightBook = () => {
           <form onSubmit={handleSubmit}>
             <div className="top-field">
               <div className="box">
-                <label>From</label>
-                <div className="input flex">
-                  <input
-                    type="text"
-                    placeholder=""
-                    value={originCity}
-                    onChange={handleOriginCityChange}
-                  ></input>
-                </div>
+                <br></br>
+                <Autocomplete
+                  disablePortal
+                  options={countries}
+                  getOptionLabel={(option) => option.label}
+                  value={{ label: originCity }}
+                  onChange={handleOriginCityChange}
+                  sx={{ ...styles.input, display: "inline-block" }}
+                  PaperComponent={StyledPaper}
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                      {...props}
+                    >
+                      {option.airport} ({option.country}) +{option.iata_code}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="From"
+                      variant="outlined"
+                      sx={textFieldStyle}
+                    />
+                  )}
+                />
               </div>
               <div className="box">
-                <label>To</label>
-                <div className="input flex">
-                  <input
-                    type="text"
-                    placeholder="Dammam, Saudi Arabia (DMM)"
-                    value={travelCity}
-                    onChange={handleTravelCityChange}
-                  ></input>
-                </div>
+                <br></br>
+                <Autocomplete
+                  disablePortal
+                  options={countries}
+                  getOptionLabel={(option) => option.label}
+                  value={{ label: travelCity }}
+                  onChange={handleOriginCityChange}
+                  sx={{ ...styles.input, display: "inline-block" }}
+                  PaperComponent={StyledPaper}
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                      {...props}
+                    >
+                      {option.label} ({option.code}) +{option.phone}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="To"
+                      variant="outlined"
+                      sx={textFieldStyle}
+                    />
+                  )}
+                />
               </div>
               <div className="box">
-                <label>Depart</label>
-                <div className="input flex">
-                  <input
+                <InputLabel>Depart</InputLabel>
+                <Box sx={styles.input}>
+                  <TextField
                     type="date"
+                    fullWidth
                     value={departDate}
                     onChange={handleDepartDateChange}
+                    variant="outlined"
+                    sx={{ input: styles.select }}
                   />
-                </div>
+                </Box>
               </div>
               <div className="box">
-                <label>Return</label>
-                <div className="input flex">
-                  <input
+                <InputLabel
+                  style={{ display: showReturnDate ? "block" : "none" }} // Conditionally render based on state
+                >
+                  Return
+                </InputLabel>
+                <Box sx={styles.input}>
+                  <TextField
                     type="date"
+                    fullWidth
                     value={arrivalDate}
                     onChange={handleArrivalDateChange}
+                    variant="outlined"
+                    sx={{ input: styles.select }}
+                    disabled={tripType === "One Way"}
+                    style={{ display: showReturnDate ? "block" : "none" }} // Conditionally render based on state
                   />
-                </div>
+                </Box>
               </div>
               <div className="box">
-                <label>Passengers/Class</label>
-                <div className="input flex">
-                  <input
-                    type="text"
-                    value="1 Passenger Economy"
-                    readOnly
-                  ></input>
-                  <IoMdArrowDropdown className="ar-icon" />
-                </div>
-                <div className="List">
-                  <h1>Passengers</h1>
-                  <div className="row">
-                    <div className="label">
-                      <p>Adults</p>
-                      <p>12+ years</p>
-                    </div>
-                    <IncDec />
-                  </div>
-                  <div className="row">
-                    <div className="label">
-                      <p>Child</p>
-                      <p>2-11 years</p>
-                    </div>
-                    <IncDec minValue={0} />
-                  </div>
-                  <div className="row">
-                    <div className="label">
-                      <p>Infant</p>
-                      <p>&lt;2 years</p>
-                    </div>
-                    <IncDec minValue={0} />
-                  </div>
-                  <h1>Class</h1>
-                  <div className="row">
-                    <div className="label">
-                      <p>Economy</p>
-                    </div>
-                    <input type="radio" name="class" checked />
-                  </div>
-                  <div className="row">
-                    <div className="label">
-                      <p>Premium</p>
-                    </div>
-                    <input type="radio" name="class" />
-                  </div>
-                  <div className="button">
-                    <button>Confirm</button>
-                  </div>
-                </div>
+                <InputLabel>Trip Type</InputLabel>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    row
+                    aria-label="tripType"
+                    name="tripType"
+                    value={tripType}
+                    onChange={handleTripTypeChange}
+                  >
+                    <FormControlLabel
+                      value="One Way"
+                      control={<Radio />}
+                      label="One Way"
+                    />
+                    <FormControlLabel
+                      value="Return"
+                      control={<Radio />}
+                      label="Return"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+              <div className="box">
+                <InputLabel>Passengers/Class</InputLabel>
+                <PassengersClassDropdown />
               </div>
             </div>
             <div className="buttons">
-              <button onClick={handleShowFlights}>
+              <button type="submit">
                 <FaPaperPlane /> Show Flights
               </button>
             </div>
@@ -195,7 +395,7 @@ const FlightBook = () => {
                     className="box"
                     key={`${countryIndex}-${cityIndex}-${hotelIndex}`}
                   >
-                    <img src={KL} />
+                    <img src={KL} alt="Hotel" />
                     <div className="details">
                       <h3>
                         {city.CityName}, {country.CountryName}

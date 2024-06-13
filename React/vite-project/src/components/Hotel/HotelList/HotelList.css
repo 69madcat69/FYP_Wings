@@ -1,0 +1,106 @@
+.HotelList .container {
+  padding-top: var(--padding-top);
+  position: relative;
+  height: 100%;
+  width: 50%;
+}
+
+.HotelList .plan {
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin: auto;
+  padding: 12px;
+  font-size: 24px;
+  color: black;
+  border-radius: 7px;
+  background-color: white;
+}
+
+.HotelList .plan::after {
+  content: "";
+  position: absolute;
+  background-color: var(--main-color);
+  height: 3px;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.HotelList .List {
+  display: flex;
+  position: relative;
+  align-items: center;
+  background-color: white;
+  margin-top: 12px;
+  padding: 20px 12px;
+  border-radius: 7px;
+}
+
+.HotelList .List .logo {
+  justify-content: center;
+}
+
+.HotelList .List .logo img {
+  width: 60px;
+  justify-content: center;
+}
+
+.HotelList .List .box {
+  font-size: 18px;
+  padding: 0 6px;
+  text-align: center;
+}
+
+.HotelList .List .box + .box {
+  padding-right: 20px;
+  border-right: 2px solid #d7e2ee;
+}
+
+.HotelList .List .top-t {
+  color: var(--secondary-text);
+}
+
+.HotelList .List .bot-t {
+  font-weight: 650;
+}
+
+.HotelList .List .text {
+  margin: 0 10px;
+}
+
+.HotelList .List .cols {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.HotelList .List .icon {
+  color: var(--main-color);
+  font-size: 20px;
+  height: 24px;
+  margin: 0 2px;
+}
+
+.HotelList .List .icon-wrapper {
+  background-color: #ebf6f2;
+  padding: 2px;
+}
+
+.HotelList .visit {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+}
+
+.HotelList .visit button {
+  background-color: var(--main-color);
+  border: none;
+  border-radius: 5px;
+  color: white;
+  padding: 10px 15px;
+  cursor: pointer;
+}

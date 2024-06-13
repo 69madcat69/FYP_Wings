@@ -1,5 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from django.core.validators import validate_email as django_validate_email
+from django.contrib.auth.password_validation import validate_password as django_validate_password
+
 UserModel = get_user_model()
 
 
@@ -24,7 +27,11 @@ def validate_email(data):
 
 
 def validate_password(data):
-    password = data['password'].strip()
+    password = data.get('password')
     if not password:
-        raise ValidationError('a password is needed')
+        raise ValidationError('Password is required')
+    try:
+        django_validate_password(password)
+    except ValidationError as e:
+        raise ValidationError(', '.join(e.messages))
     return True
