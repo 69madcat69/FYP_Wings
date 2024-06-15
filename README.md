@@ -18,3 +18,6 @@ Travelers face challenges in finding personalized travel plans that meet their s
 ### 1.4 Scope
 The project will focus on the initial phase of collecting user requirements and designing the system architecture. The subsequent phases will involve system development, testing, and deployment.
 
+### Demo
+#### Main Page
+![Uploading image.png…]()
