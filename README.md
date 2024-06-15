@@ -20,5 +20,17 @@ The project will focus on the initial phase of collecting user requirements and 
 
 ### Demo
 #### Main Page
-![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/07510e54-325c-4322-a96c-7d4465676de1)
+![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/1a2d259d-3b68-48c3-9192-c4850211d0f2)
+
+#### Flights page
+![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/943b7530-79bf-4953-927e-a721808a46a8)
+
+#### Hotels page
+![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/a2903e1f-2558-4c00-a991-6d17806b553e)
+
+#### Sign up
+![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/6c53a1bc-4ebb-4fa9-a046-25d70a9f977a)
+
+#### Login
+![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/8195c69d-8835-45e9-b922-1652cf36dea1)
 
