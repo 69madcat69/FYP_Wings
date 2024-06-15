@@ -20,4 +20,5 @@ The project will focus on the initial phase of collecting user requirements and 
 
 ### Demo
 #### Main Page
-![Uploading image.png…]()
+![image](https://github.com/69madcat69/FYP_Wings/assets/93109732/07510e54-325c-4322-a96c-7d4465676de1)
+
