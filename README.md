@@ -1,4 +1,4 @@
-# FYP_Wings
+# FYP_Wings (On-Going)
 ## Final year project for travel management system applying AI
  
 This project aims to develop an AI-powered travel comparison system focused on identifying and documenting user requirements. The project's objectives include collecting and analyzing user feedback to construct a comprehensive requirements document, ensuring stakeholder involvement, and aligning with corporate goals. The methodology involved surveys, interviews, and workshops to gather feedback from users and stakeholders, ensuring an accurate representation of user needs. The next phase involves the design and development of the AI-powered system, aiming to create a user-centric, efficient, and innovative solution for travelers.
