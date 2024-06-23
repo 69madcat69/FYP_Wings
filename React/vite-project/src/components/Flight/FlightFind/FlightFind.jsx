@@ -1,5 +1,6 @@
 /*eslint-disable */
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
@@ -14,16 +15,15 @@ const FlightFind = () => {
   const [flights, setFlights] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [departDate, setDepartDate] = useState(
-    new Date().toISOString().slice(0, 10)
-  );
-  const [arrivalDate, setArrivalDate] = useState(
+  const { originCity, travelCity, departDate, arrivalDate } = useParams();
+  const [depart, setDepart] = useState(new Date().toISOString().slice(0, 10));
+  const [arrival, setArrival] = useState(
     new Date(new Date().setDate(new Date().getDate() + 7))
       .toISOString()
       .slice(0, 10)
   );
-  const [originCity, setOriginCity] = useState("");
-  const [travelCity, setTravelCity] = useState("");
+  const [origin, setOrigin] = useState("");
+  const [travel, setTravel] = useState("");
   const [minPrice, setMinPrice] = useState(1000);
   const [maxPrice, setMaxPrice] = useState(4000);
   const [departure, setDeparture] = useState([1, 12]);
@@ -59,19 +59,19 @@ const FlightFind = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(originCity + travelCity + arrivalDate + departDate);
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/api/getflight",
           {
             params: {
-              origin: "PEK",
-              destination: "HND",
-              departure_date: "2024-12-01",
+              origin: originCity,
+              destination: travelCity,
+              departure_date: departDate,
             },
           }
         );
         setFlights(response.data);
-        console.log("AHMED HAS C");
       } catch (error) {
         setError(error.message);
       } finally {
@@ -90,13 +90,27 @@ const FlightFind = () => {
     return <div>Error: {error}</div>;
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Origin City:", originCity);
-    console.log("Travel City:", travelCity);
-    console.log("Departure Date:", departDate);
-    console.log("Arrival Date:", arrivalDate);
-    // You can perform further actions such as sending data to server, etc.
+    console.log("Origin City:", origin);
+    console.log("Travel City:", travel);
+    console.log("Departure Date:", depart);
+    console.log("Arrival Date:", arrival);
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/getflight", {
+        params: {
+          origin: origin,
+          destination: travel,
+          departure_date: depart,
+        },
+      });
+      setFlights(response.data);
+      console.log(response.data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePriceChange = (event, newValue) => {
@@ -119,8 +133,8 @@ const FlightFind = () => {
                 <input
                   type="text"
                   placeholder="Enter Origin City"
-                  value={originCity}
-                  onChange={(e) => setOriginCity(e.target.value)}
+                  value={origin}
+                  onChange={(e) => setOrigin(e.target.value)}
                 />
               </div>
             </div>
@@ -130,8 +144,8 @@ const FlightFind = () => {
                 <input
                   type="text"
                   placeholder="Enter Travel City"
-                  value={travelCity}
-                  onChange={(e) => setTravelCity(e.target.value)}
+                  value={travel}
+                  onChange={(e) => setTravel(e.target.value)}
                 />
               </div>
             </div>
@@ -140,8 +154,8 @@ const FlightFind = () => {
               <div className="input flex">
                 <input
                   type="date"
-                  value={departDate}
-                  onChange={(e) => setDepartDate(e.target.value)}
+                  value={depart}
+                  onChange={(e) => setDepart(e.target.value)}
                 />
               </div>
             </div>
@@ -150,8 +164,8 @@ const FlightFind = () => {
               <div className="input flex">
                 <input
                   type="date"
-                  value={arrivalDate}
-                  onChange={(e) => setArrivalDate(e.target.value)}
+                  value={arrival}
+                  onChange={(e) => setArrival(e.target.value)}
                 />
               </div>
             </div>

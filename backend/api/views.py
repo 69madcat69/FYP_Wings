@@ -1,117 +1,74 @@
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import render
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import get_user_model, login, logout
-from rest_framework import viewsets, permissions, status
-from .serializer import *
+from rest_framework import viewsets, permissions, status, generics
+from .serializers import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .validations import *
 from django.views.decorators.csrf import csrf_protect
 from rest_framework.decorators import api_view
 from django.http import JsonResponse
+from rest_framework.permissions import AllowAny, IsAuthenticated
 import requests
 from duffel_api import Duffel
 from amadeus import Client, ResponseError
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from .validations import custom_validation, validate_email, validate_password
+# from .validations import custom_validation, validate_email, validate_password
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework.permissions import AllowAny
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
 
 
 
-class UserRegister(APIView):
-    permission_classes = (permissions.AllowAny,)
+# class UserRegister(APIView):
+#     permission_classes = (permissions.AllowAny,)
 
-    def post(self, request):
-        clean_data = custom_validation(request.data)
-        serializer = UserRegisterSerializer(data=clean_data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         clean_data = custom_validation(request.data)
+#         serializer = UserRegisterSerializer(data=clean_data)
+#         if serializer.is_valid(raise_exception=True):
+#             user = serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserLogin(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
+# class UserLogin(APIView):
+#     permission_classes = (permissions.AllowAny,)
+#     authentication_classes = (SessionAuthentication, BasicAuthentication)
 
-    def post(self, request):
-        data = request.data
-        assert validate_email(data)
-        assert validate_password(data)
-        serializer = UserLoginSerializer(data=data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.check_user(data)
-            login(request, user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         data = request.data
+#         assert validate_email(data)
+#         assert validate_password(data)
+#         serializer = UserLoginSerializer(data=data)
+#         if serializer.is_valid(raise_exception=True):
+#             user = serializer.check_user(data)
+#             login(request, user)
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserLogout(APIView):
-    permission_classes = (permissions.AllowAny,)
-    authentication_classes = ()
+# class UserLogout(APIView):
+#     permission_classes = (permissions.AllowAny,)
+#     authentication_classes = ()
 
-    def post(self, request):
-        logout(request)
-        return Response(status=status.HTTP_200_OK)
+#     def post(self, request):
+#         logout(request)
+#         return Response(status=status.HTTP_200_OK)
 
-class UserView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (SessionAuthentication, BasicAuthentication)
+# class UserView(APIView):
+#     permission_classes = (permissions.IsAuthenticated,)
+#     authentication_classes = (SessionAuthentication, BasicAuthentication)
 
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+#     def get(self, request):
+#         serializer = UserSerializer(request.user)
+#         return Response({'user': serializer.data}, status=status.HTTP_200_OK)
+                
 
-def displaydata1(request):
 
-    api_url = "http://127.0.0.1:8000/api/getflight"
-    
-    response = requests.get(api_url)
-    
-    if response.status_code == 200:
-        flights_data = response.json()
-        
-        flights = flights_data.get('offers', [])
-        
-        for flight in flights:
-            airportName = request.GET.get('name')
-            cityName = request.GET.get('city_name')
-            iataCode = request.GET.get('iata_code')
-            
-        return flights_data
-    else:
-        print("Error fetching flights data:", response.status_code)
-        
-        
-@api_view(['GET'])
-class FlightSearchView(APIView):
-    def flight_search(request):
-        origin = request.GET.get('origin')
-        destination = request.GET.get('destination')
-        departure_date = request.GET.get('departure_date')
-        arrival_date = request.GET.get('arrival_date')
-        passengers = request.GET.get('passengers')
-        travel_class = request.GET.get('travel_class')
-    
-        flights = search_flights(
-            origin,
-            destination,
-            departure_date,
-        )
-    
-        return JsonResponse(flights, safe=False)
 
-def search_flights(origin, destination, departure_date, arrival_date, passengers, travel_class):
-    # Replace with the actual API endpoint and parameters
-    api_url = "http://127.0.0.1:8000/api/getflight?{origin}/{destination}/{departure_date}"
-
-    response = requests.get(api_url)
-    
-    if response.status_code == 200:
-        flights = response.json()
-    else:
-        flights = {"error": "Unable to fetch flights"}
-    
-    return flights  
     
 def get_aircraft(request):
     duffel = Duffel(access_token='duffel_test_bl6lsCRkoKbnG3GGptTbNRkW92M2QTZDWsU_oGp_QqL')
@@ -244,3 +201,98 @@ def get_aircraft(request):
         
     return JsonResponse(offer_request_data, safe=False)
 
+# def SkyscannerHotelSearch(request):
+    
+#         url = "https://booking-com15.p.rapidapi.com/api/v1/meta/locationToLatLong"
+
+#         querystring = {"query":"kuala"}
+#         # url = "https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotelsByCoordinates"
+#         # querystring = {"arrival_date":"2024-11-17", "departure_date":"2024-11-18","latitude":"19.24232736426361","longitude":"72.85841985686734","adults":"1","children_age":"0,17","room_qty":"1","units":"metric","temperature_unit":"c","languagecode":"en-us","currency_code":"EUR"}
+#         # querystring = {"arrival_date":"2024-11-17", "departure_date":"2024-11-18","hotel_id":"191605","adults":"1","children_age":"1,17","room_qty":"1","units":"metric","temperature_unit":"c","languagecode":"en-us","currency_code":"EUR"}
+#         headers = {
+#         "x-rapidapi-key": "50efc8a679mshd6e0b309ce18c1cp1d72abjsn9f3ba584030d", 
+#         "x-rapidapi-host": "booking-com15.p.rapidapi.com"
+#         }
+
+#         response = requests.get(url, headers=headers, params=querystring)
+#         if response.status_code == 200:
+#             return JsonResponse(response.json(), safe=False, status=response.status_code)
+#         else:
+#             return JsonResponse({"error": response.json()}, status=response.status_code)
+
+
+def SkyscannerHotelSearch(request):
+    # Extract location name from the request
+    location_name = request.GET.get('location', 'kuala')
+    check_in_date = request.GET.get('check_in', '2024-11-17')
+    check_out_date = request.GET.get('check_out', '2024-11-18')
+    adults = request.GET.get('adults', '1')
+    children_age = request.GET.get('children_age', '0,17')
+    room_qty = request.GET.get('room_qty', '1')
+    currency_code = request.GET.get('currency_code', 'EUR')
+    
+    # Step 1: Get latitude and longitude for the location name
+    url_lat_long = "https://booking-com15.p.rapidapi.com/api/v1/meta/locationToLatLong"
+    querystring_lat_long = {"query": location_name}
+    headers = {
+        'x-rapidapi-key': "013af7f96emsh2668abdb044fc12p1144c3jsn7edf6b5989d8",
+        'x-rapidapi-host': "booking-com15.p.rapidapi.com"
+    }
+
+    response_lat_long = requests.get(url_lat_long, headers=headers, params=querystring_lat_long)
+    if response_lat_long.status_code != 200:
+        return JsonResponse({"error": response_lat_long.json()}, status=response_lat_long.status_code)
+    
+    lat_long_data = response_lat_long.json()
+    if not lat_long_data['status']:
+        return JsonResponse({"error": "Location not found"}, status=404)
+    
+    lat = lat_long_data['data'][0]['geometry']['location']['lat']
+    lng = lat_long_data['data'][0]['geometry']['location']['lng']
+    
+    # Step 2: Use latitude and longitude to search for hotels
+    url_hotels = "https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotelsByCoordinates"
+
+    querystring_hotels = {
+        "arrival_date": check_in_date,
+        "departure_date": check_out_date,
+        "latitude": lat,
+        "longitude": lng,
+        "adults": adults,
+        "children_age": children_age,
+        "room_qty": room_qty,
+        "units": "metric",
+        "temperature_unit": "c",
+        "languagecode": "en-us",
+        "currency_code": currency_code
+    }
+
+    response_hotels = requests.get(url_hotels, headers=headers, params=querystring_hotels)
+    if response_hotels.status_code == 200:
+        return JsonResponse(response_hotels.json(), safe=False, status=response_hotels.status_code)
+    else:
+        return JsonResponse({"error": response_hotels.json()}, status=response_hotels.status_code)
+
+User = get_user_model()
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = UserToken
+
+class RegisterView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = RegistrationSerializer
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) 
+def protectedView(request):
+    output = f"Welcome {request.user}, Authentication Successful"
+    return Response({'response':output}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+def view_all_routes(request):
+    data = [
+        'api/token/refresh/',
+        'api/register/',
+        'api/token/'
+    ]
+    return Response(data)

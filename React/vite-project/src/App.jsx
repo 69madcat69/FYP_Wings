@@ -29,7 +29,7 @@ const App = () => {
         <Route path="/HotelBook" element={<HotelBook />} />
         <Route path="/FlightList" element={<FlightList />} />
         <Route path="/HotelList" element={<HotelList />} />
-        <Route path="/FlightFind" element={<FlightFind />} />
+        {/* <Route path="/FlightFind" element={<FlightFind />} /> */}
         <Route path="/HotelFind" element={<HotelFind />} />
         <Route path="/SignUp" element={<SignUp />} />
         <Route path="/Login" element={<Login2 />} />
@@ -38,8 +38,12 @@ const App = () => {
         <Route path="/*" element={<Error />} />
         <Route path="/killme" element={<Amadeus />} />
         <Route
-          path="/FlightFind/:departureCity/:arrivalCity/:departureDate/:returnDate"
+          path="/FlightFind/:originCity/:travelCity/:departDate/:arrivalDate"
           element={<FlightFind />}
+        />
+        <Route
+          path="/HotelFind/:travelCity/:checkInDate/:checkOutDate"
+          element={<HotelFind />}
         />
       </Routes>
     </>

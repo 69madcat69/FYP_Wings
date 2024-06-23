@@ -11,14 +11,13 @@ import IncDec from "../../../functions/IncDec/IncDec";
 import bkground from "../../assets/hotelbk.jpg";
 const HotelBook = () => {
   const [suggestions, setSuggestions] = useState([]);
-  const [originCity, setOriginCity] = useState("Kuala Lumpur, Malaysia (KUL)");
   const navigate = useNavigate();
 
   const [travelCity, setTravelCity] = useState("");
-  const [departDate, setDepartDate] = useState(
+  const [checkInDate, setCheckInDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
-  const [arrivalDate, setArrivalDate] = useState(
+  const [checkOutDate, setCheckOutDate] = useState(
     new Date(new Date().setDate(new Date().getDate() + 7))
       .toISOString()
       .slice(0, 10)
@@ -27,42 +26,39 @@ const HotelBook = () => {
     setSuggestions(hotelData);
   }, []);
   useEffect(() => {
-    setArrivalDate(() => {
-      const newDate = new Date(departDate);
+    setCheckOutDate(() => {
+      const newDate = new Date(checkInDate);
       newDate.setDate(newDate.getDate() + 7);
       return newDate.toISOString().slice(0, 10);
     });
-  }, [departDate]);
+  }, [checkInDate]);
 
-  const handleOriginCityChange = (event) => {
-    console.log(event.target.value);
-    setOriginCity(event.target.value);
-  };
-  const handleShowHotels = () => {
-    // Navigate to the HotelFind page when the button is clicked
-    navigate("/HotelFind");
-  };
   const handleTravelCityChange = (event) => {
     setTravelCity(event.target.value);
   };
 
-  const handleDepartDateChange = (event) => {
-    setDepartDate(event.target.value);
+  const handleCheckInDateChange = (event) => {
+    setCheckInDate(event.target.value);
   };
 
-  const handleArrivalDateChange = (event) => {
-    setArrivalDate(event.target.value);
+  const handleCheckoutDateChange = (event) => {
+    setCheckOutDate(event.target.value);
   };
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Origin City:", originCity);
+
+    try {
+      navigate(`/HotelFind/${travelCity}/${checkInDate}/${checkOutDate}`);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
     console.log("Travel City:", travelCity);
-    console.log("Departure Date:", departDate);
-    console.log("Arrival Date:", arrivalDate);
+    console.log("Checkin_Date:", checkInDate);
+    console.log("Checkout_Date:", checkOutDate);
   };
-  const CountryName = "Malaysia";
-  const CityName = "Kuala Lumpur";
-  const Type = ["Flights", "Hotels"];
+
   return (
     <div className="HotelBook">
       <div className="BkImage">
@@ -87,8 +83,8 @@ const HotelBook = () => {
                   <input
                     type="text"
                     placeholder=""
-                    value={originCity}
-                    onChange={handleOriginCityChange}
+                    value={travelCity}
+                    onChange={handleTravelCityChange}
                   ></input>
                 </div>
               </div>
@@ -97,8 +93,8 @@ const HotelBook = () => {
                 <div className="input flex">
                   <input
                     type="date"
-                    value={departDate}
-                    onChange={handleDepartDateChange}
+                    value={checkInDate}
+                    onChange={handleCheckInDateChange}
                   />
                 </div>
               </div>
@@ -107,8 +103,8 @@ const HotelBook = () => {
                 <div className="input flex">
                   <input
                     type="date"
-                    value={arrivalDate}
-                    onChange={handleArrivalDateChange}
+                    value={checkOutDate}
+                    onChange={handleCheckoutDateChange}
                   />
                 </div>
               </div>
@@ -161,7 +157,7 @@ const HotelBook = () => {
               </div>
             </div>
             <div className="buttons">
-              <button onClick={handleShowHotels}>
+              <button type="submit">
                 <RiHotelFill />
                 Show Hotels
               </button>

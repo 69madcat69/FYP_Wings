@@ -67,11 +67,11 @@ const FlightBook = () => {
   };
 
   const handleOriginCityChange = (event, value) => {
-    setOriginCity(value.label);
+    setOriginCity(value.airport);
   };
 
   const handleTravelCityChange = (event, value) => {
-    setTravelCity(value.label);
+    setTravelCity(value.airport);
   };
 
   const handleDepartDateChange = (event) => {
@@ -85,34 +85,21 @@ const FlightBook = () => {
   const handleTripTypeChange = (event) => {
     const { value } = event.target;
     setTripType(value);
-    setShowReturnDate(value === "Return"); // Update the visibility state based on the selected trip type
+    setShowReturnDate(value === "Return");
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const flightData = {
-      origin_city: originCity,
-      travel_city: travelCity,
-      depart_date: departDate,
-      // arrival_date: tripType === "Return" ? arrivalDate : null,
-      // passengers: 1,
-      // travel_class: "Economy",
-    };
-
+    console.log("Origin City:", originCity);
+    console.log("Travel City:", travelCity);
+    console.log("Departure Date:", departDate);
+    console.log("Arrival Date:", arrivalDate);
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/flightsearch",
-        flightData
-      );
-      console.log("Response:", response.data);
       navigate(
-        `/FlightFind/${originCity}/${travelCity}/${departDate}
-        // /{tripType === "Return" ? arrivalDate : "null"
-        }`
+        `/FlightFind/${originCity}/${travelCity}/${departDate}/${arrivalDate}`
       );
     } catch (error) {
-      console.error("There was an error submitting the form:", error);
+      console.error("Error fetching flights:", error);
     }
   };
 
@@ -228,15 +215,28 @@ const FlightBook = () => {
     },
   }));
 
-  //airport name, country name      iata_code
+  //airport name, country name
   const countries = [
-    { airport: "PEK", country: "Andorra", iata_code: "376" },
-    {
-      airport: "DEL",
-      country: "United Arab Emirates",
-      iata_code: "971",
-    },
-    { airport: "AF", country: "Afghanistan", iata_code: "93" },
+    { airport: "HND", country: "Japan" },
+    { airport: "DXB", country: "United Arab Emirates" },
+    { airport: "HKG", country: "Hong Kong" },
+    { airport: "BKK", country: "Thailand" },
+    { airport: "SIN", country: "Singapore" },
+    { airport: "ICN", country: "South Korea" },
+    { airport: "KUL", country: "Malaysia" },
+    { airport: "DEL", country: "India" },
+    { airport: "CGK", country: "Indonesia" },
+    { airport: "TPE", country: "Taiwan" },
+    { airport: "KIX", country: "Japan" },
+    { airport: "PVG", country: "China" },
+    { airport: "CAN", country: "China" },
+    { airport: "BOM", country: "India" },
+    { airport: "IST", country: "Turkey" },
+    { airport: "SGN", country: "Vietnam" },
+    { airport: "AUH", country: "United Arab Emirates" },
+    { airport: "JED", country: "Saudi Arabia" },
+    { airport: "DOH", country: "Qatar" },
+    { airport: "KMG", country: "China" },
   ];
 
   return (
@@ -273,7 +273,7 @@ const FlightBook = () => {
                       sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                       {...props}
                     >
-                      {option.airport} ({option.country}) +{option.iata_code}
+                      {option.airport} ({option.country}) {option.iata_code}
                     </Box>
                   )}
                   renderInput={(params) => (
@@ -293,7 +293,7 @@ const FlightBook = () => {
                   options={countries}
                   getOptionLabel={(option) => option.label}
                   value={{ label: travelCity }}
-                  onChange={handleOriginCityChange}
+                  onChange={handleTravelCityChange}
                   sx={{ ...styles.input, display: "inline-block" }}
                   PaperComponent={StyledPaper}
                   renderOption={(props, option) => (
@@ -302,7 +302,7 @@ const FlightBook = () => {
                       sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                       {...props}
                     >
-                      {option.label} ({option.code}) +{option.phone}
+                      {option.airport} ({option.country}) {option.iata_code}
                     </Box>
                   )}
                   renderInput={(params) => (
