@@ -1,3 +1,4 @@
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import render
 from rest_framework.authentication import SessionAuthentication
@@ -20,7 +21,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny
 from django.conf import settings
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from django.core.exceptions import ObjectDoesNotExist 
 
 
 
@@ -222,7 +224,6 @@ def get_aircraft(request):
 
 
 def SkyscannerHotelSearch(request):
-    # Extract location name from the request
     location_name = request.GET.get('location', 'kuala')
     check_in_date = request.GET.get('check_in', '2024-11-17')
     check_out_date = request.GET.get('check_out', '2024-11-18')
@@ -231,11 +232,10 @@ def SkyscannerHotelSearch(request):
     room_qty = request.GET.get('room_qty', '1')
     currency_code = request.GET.get('currency_code', 'EUR')
     
-    # Step 1: Get latitude and longitude for the location name
     url_lat_long = "https://booking-com15.p.rapidapi.com/api/v1/meta/locationToLatLong"
     querystring_lat_long = {"query": location_name}
     headers = {
-        'x-rapidapi-key': "013af7f96emsh2668abdb044fc12p1144c3jsn7edf6b5989d8",
+        'x-rapidapi-key': "f5cb0387f1msh632789447cc8d16p1968d8jsnd1fbf2bd2707",
         'x-rapidapi-host': "booking-com15.p.rapidapi.com"
     }
 
@@ -250,9 +250,7 @@ def SkyscannerHotelSearch(request):
     lat = lat_long_data['data'][0]['geometry']['location']['lat']
     lng = lat_long_data['data'][0]['geometry']['location']['lng']
     
-    # Step 2: Use latitude and longitude to search for hotels
     url_hotels = "https://booking-com15.p.rapidapi.com/api/v1/hotels/searchHotelsByCoordinates"
-
     querystring_hotels = {
         "arrival_date": check_in_date,
         "departure_date": check_out_date,
@@ -268,19 +266,41 @@ def SkyscannerHotelSearch(request):
     }
 
     response_hotels = requests.get(url_hotels, headers=headers, params=querystring_hotels)
-    if response_hotels.status_code == 200:
-        return JsonResponse(response_hotels.json(), safe=False, status=response_hotels.status_code)
-    else:
+    if response_hotels.status_code != 200:
         return JsonResponse({"error": response_hotels.json()}, status=response_hotels.status_code)
+    
+    hotels_data = response_hotels.json()
+    hotel_details_list = []
+
+    url_details = "https://booking-com15.p.rapidapi.com/api/v1/hotels/getHotelDetails"
+    
+    for hotel in hotels_data['data']:
+        hotel_id = hotel['id']
+        querystring_details = {"hotel_id": hotel_id}
+        
+        response_details = requests.get(url_details, headers=headers, params=querystring_details)
+        if response_details.status_code == 200:
+            details_data = response_details.json()
+            hotel_details = {
+                "url": details_data.get('url'),
+                "accommodation_type_name": details_data.get('accommodation_type_name'),
+                "arrival_date":details_data.get('arrival_date'),
+                "departure_date":details_data.get('departure_date'),
+            }
+            hotel_details_list.append(hotel_details)
+        else:
+            hotel_details_list.append({"error": "Details not found for hotel ID: {}".format(hotel_id)})
+
+    return JsonResponse(hotel_details_list, safe=False, status=200)
 
 User = get_user_model()
 
-class MyTokenObtainPairView(TokenObtainPairView):
+class UserLogin(TokenObtainPairView):
     serializer_class = UserToken
 
 class RegisterView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = RegistrationSerializer
+    serializer_class = UserRegister
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated]) 
@@ -289,10 +309,81 @@ def protectedView(request):
     return Response({'response':output}, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
-def view_all_routes(request):
-    data = [
-        'api/token/refresh/',
-        'api/register/',
-        'api/token/'
-    ]
-    return Response(data)
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def profileInfo(request):
+    user = request.user
+    serializer = UserWithBookingSerializer(user)
+    return Response(serializer.data)
+
+# @api_view(['PUT'])
+# @permission_classes([IsAuthenticated])
+# @authentication_classes([JWTAuthentication])
+# class UserProfileUpdate(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def put(self, request, *args, **kwargs):
+#         user = request.user
+#         serializer = UserSerializer(user, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=400)
+    
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def UserProfileUpdate(request):
+    new_firstName = request.data.get('firstName', '')
+    new_lastName = request.data.get('lastName', '')
+    new_email = request.data.get('email', '')
+    new_phone = request.data.get('phone', '')
+    new_password = request.data.get('password', '')
+
+    try:
+        profile = request.user
+    except ObjectDoesNotExist:
+        return Response({'message': 'Profile not found'}, status=404)
+        
+    profile.firstName = new_firstName
+    profile.lastName = new_lastName      
+    profile.phone = new_phone      
+    profile.email = new_email      
+    profile.password = new_password      
+
+    profile.save()
+
+    return Response({'message': 'Data updated successfully'})
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def createBooking(request):
+    user = request.user
+    data = request.data
+    booking = Booking(
+        user=user,
+        duffel_booking_id=data['id'],
+        origin=data['origin'],
+        destination=data['destination'],
+        departure_date=data['departure_date'],
+        return_date=data.get('return_date'),
+        total_amount=data['total_amount'],
+        currency=data['currency']
+    )
+    booking.save()
+    serializer = BookingSerializer(booking)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def delete_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(id=booking_id, user=request.user)
+        booking.delete()
+        return Response({'message': 'Booking deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except Booking.DoesNotExist:
+        return Response({'error': 'Booking not found'}, status=status.HTTP_404_NOT_FOUND)

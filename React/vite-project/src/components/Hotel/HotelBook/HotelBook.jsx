@@ -9,6 +9,7 @@ import hotelData from "../../../functions/HotelData";
 import KL from "../../assets/KL.jpg";
 import IncDec from "../../../functions/IncDec/IncDec";
 import bkground from "../../assets/hotelbk.jpg";
+
 const HotelBook = () => {
   const [suggestions, setSuggestions] = useState([]);
   const navigate = useNavigate();
@@ -22,9 +23,11 @@ const HotelBook = () => {
       .toISOString()
       .slice(0, 10)
   );
+
   useEffect(() => {
     setSuggestions(hotelData);
   }, []);
+
   useEffect(() => {
     setCheckOutDate(() => {
       const newDate = new Date(checkInDate);
@@ -170,7 +173,7 @@ const HotelBook = () => {
             <h3>Search Hotels & places to our most popular destinations</h3>
           </div>
           <div className="suggest">
-            {hotelData.map((country, countryIndex) =>
+            {/* {hotelData.map((country, countryIndex) =>
               country.Cities.map((city, cityIndex) =>
                 city.Hotels.map((hotel, hotelIndex) => (
                   <div
@@ -187,7 +190,7 @@ const HotelBook = () => {
                   </div>
                 ))
               )
-            )}
+            )} */}
           </div>
         </div>
       </div>

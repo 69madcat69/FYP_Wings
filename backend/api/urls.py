@@ -16,11 +16,12 @@ urlpatterns = [
 	# path('user', views.UserView.as_view(), name='user'),
     path('getflight', get_aircraft, name='get_aircraft'),
     path('gethotel', SkyscannerHotelSearch, name='gethotel'),
-    path('token/', views.MyTokenObtainPairView.as_view(),name="token-obtain"),
-    path('token/refresh/', TokenRefreshView.as_view(), name="refresh-token"),
-    path('register/', views.RegisterView.as_view(), name="register-user"),
-    path('test/', views.protectedView, name="test"),
-    path('', views.view_all_routes, name="all-routes")
+    path('token', views.UserLogin.as_view(),name="token-obtain"),
+    path('token/refresh', TokenRefreshView.as_view(), name="refresh-token"),
+    path('register', views.RegisterView.as_view(), name="register-user"),
+    path('test', views.protectedView, name="test"),
+    path('profile', views.profileInfo, name="profileInfo"),
+    path('profile2', views.UserProfileUpdate, name="profile2"),
 
 
 ]

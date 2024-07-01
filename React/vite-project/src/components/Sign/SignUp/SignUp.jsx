@@ -1,47 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Image from "../../assets/L1.jpg";
 import "./SignUp.css";
+import AuthContext from "../../../functions/Authprovider/authprovider";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [Confirmpassword, setConfirmpassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const navigateTo = useNavigate();
+  const { registerUser } = useContext(AuthContext);
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/register",
-        {
-          first_name: firstName,
-          last_name: lastName,
-          email,
-          phone: phoneNumber,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-      setSuccess(true);
-      navigateTo("/login");
-    } catch (error) {
-      setError(
-        "Signup failed: " + (error.response?.data?.detail || error.message)
-      );
-    }
+    console.log(email);
+
+    registerUser(firstName, lastName, email, phone, password, Confirmpassword);
   };
 
   const location = useLocation();
@@ -99,8 +79,8 @@ const SignUp = () => {
                   <label>Phone Number</label>
                   <input
                     type="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="01-23456125"
                     required
                   />
@@ -113,7 +93,7 @@ const SignUp = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="*********"
+                    placeholder="*******"
                     required
                   />
                 </div>
@@ -121,9 +101,9 @@ const SignUp = () => {
                   <label>Confirm Password</label>
                   <input
                     type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="*********"
+                    value={Confirmpassword}
+                    onChange={(e) => setConfirmpassword(e.target.value)}
+                    placeholder="*******"
                     required
                   />
                 </div>

@@ -17,35 +17,39 @@ import Error from "./functions/ErrorPage/Error";
 import HotelBook from "./components/Hotel/HotelBook/HotelBook";
 import Amadeus from "./components/Flight/FlightFind/Amadeus";
 import Profile from "./components/Sign/Profile/Profile";
+import { AuthProvider } from "./functions/Authprovider/authprovider";
+import Sad from "./functions/Payment/components";
+
 // import { AuthContext } from "./functions/Authprovider/authprovider";
 const App = () => {
   // const { isAuthenticated } = useContext(AuthContext); // Get authentication status from context
 
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<FlightBook />} />
-        <Route path="/HotelBook" element={<HotelBook />} />
-        <Route path="/FlightList" element={<FlightList />} />
-        <Route path="/HotelList" element={<HotelList />} />
-        {/* <Route path="/FlightFind" element={<FlightFind />} /> */}
-        <Route path="/HotelFind" element={<HotelFind />} />
-        <Route path="/SignUp" element={<SignUp />} />
-        <Route path="/Login" element={<Login2 />} />
-        <Route path="/Profile" element={<Profile />} />
+      <AuthProvider>
+        <Navbar />
 
-        <Route path="/*" element={<Error />} />
-        <Route path="/killme" element={<Amadeus />} />
-        <Route
-          path="/FlightFind/:originCity/:travelCity/:departDate/:arrivalDate"
-          element={<FlightFind />}
-        />
-        <Route
-          path="/HotelFind/:travelCity/:checkInDate/:checkOutDate"
-          element={<HotelFind />}
-        />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<FlightBook />} />
+          <Route path="/HotelBook" element={<HotelBook />} />
+          <Route path="/FlightList" element={<FlightList />} />
+          <Route path="/HotelList" element={<HotelList />} />
+          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/Login" element={<Login2 />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Booking" element={<Sad />} />
+          <Route path="/*" element={<Error />} />
+          <Route path="/killme" element={<Amadeus />} />
+          <Route
+            path="/FlightFind/:originCity/:travelCity/:departDate/:arrivalDate"
+            element={<FlightFind />}
+          />
+          <Route
+            path="/HotelFind/:travelCity/:checkInDate/:checkOutDate"
+            element={<HotelFind />}
+          />
+        </Routes>
+      </AuthProvider>
     </>
   );
 };

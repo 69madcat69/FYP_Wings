@@ -1,106 +1,227 @@
-import React, { useState, useEffect } from "react";
+/*eslint-disable*/
+import React, { useEffect, useState } from "react";
 import "./Profile.css";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 
-axios.defaults.xsrfCookieName = "csrftoken";
-axios.defaults.xsrfHeaderName = "X-CSRFToken";
-axios.defaults.withCredentials = true;
-
 const Profile = () => {
-  const [profileData, setProfileData] = useState({});
-  const [error, setError] = useState("");
+  const token = JSON.parse(localStorage.getItem("authTokens"));
+  const accessToken = token?.access;
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+  });
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchUser = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/user", {
+        const response = await axios.get("http://127.0.0.1:8000/api/profile", {
           headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": axios.defaults.xsrfHeaderName,
+            Authorization: `Bearer ${accessToken}`,
           },
         });
-        setProfileData(response.data.user);
-      } catch (err) {
-        console.error("Failed to fetch user data:", err);
-        setError(
-          "Failed to fetch user data: " +
-            (err.response?.data?.detail || err.message)
-        );
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user:", error);
       }
     };
-    fetchProfileData();
-  }, []);
+    if (accessToken) {
+      fetchUser();
+    }
+  }, [accessToken]);
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(
+        "http://127.0.0.1:8000/api/profile2",
+        {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      setUser(response.data);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating user:", error.response.data);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUser((prevUser) => ({
+      ...prevUser,
+      [name]: value,
+    }));
+  };
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="profile-container">
       <div className="profile-header">
         <span className="profile-title">Account</span>
         <div className="profile-details">
-          <div className="profile-item">
-            <div className="profile-info">
-              <span className="profile-label">First Name:</span>
-              <span className="profile-value">{profileData.first_name}</span>
-            </div>
-            <button className="profile-button">
-              <div className="profile-button-content">
-                <FaEdit />
-                <span className="profile-button-text">Change</span>
+          {isEditing ? (
+            <>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">First Name:</span>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={user.firstName}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </button>
-          </div>
-          <div className="profile-item">
-            <div className="profile-info">
-              <span className="profile-label">Last Name:</span>
-              <span className="profile-value">{profileData.last_name}</span>
-            </div>
-            <button className="profile-button">
-              <div className="profile-button-content">
-                <FaEdit />
-                <span className="profile-button-text">Change</span>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Last Name:</span>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={user.lastName}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </button>
-          </div>
-          <div className="profile-item">
-            <div className="profile-info">
-              <span className="profile-label">Email:</span>
-              <span className="profile-value">{profileData.email}</span>
-            </div>
-            <button className="profile-button">
-              <div className="profile-button-content">
-                <FaEdit />
-                <span className="profile-button-text">Change</span>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Email:</span>
+                  <input
+                    type="email"
+                    name="email"
+                    value={user.email}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </button>
-          </div>
-          <div className="profile-item">
-            <div className="profile-info">
-              <span className="profile-label">Phone:</span>
-              <span className="profile-value">{profileData.phone}</span>
-            </div>
-            <button className="profile-button">
-              <div className="profile-button-content">
-                <FaEdit />
-                <span className="profile-button-text">Change</span>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Phone:</span>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={user.phone}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </button>
-          </div>
-          <div className="profile-item">
-            <div className="profile-info">
-              <span className="profile-label">Password:</span>
-              <span className="profile-value">********</span>{" "}
-              {/* Do not show the actual password */}
-            </div>
-            <button className="profile-button">
-              <div className="profile-button-content">
-                <FaEdit />
-                <span className="profile-button-text">Change</span>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Password:</span>
+                  <input
+                    type="text"
+                    name="password"
+                    value={user.password}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </button>
-          </div>
+              <button className="profile-button" onClick={handleSave}>
+                Save
+              </button>
+              <button
+                className="profile-button"
+                onClick={() => setIsEditing(false)}
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">First Name:</span>
+                  <span className="profile-value">{user.firstName}</span>
+                </div>
+                <button
+                  className="profile-button"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <div className="profile-button-content">
+                    <FaEdit />
+                    <span className="profile-button-text">Change</span>
+                  </div>
+                </button>
+              </div>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Last Name:</span>
+                  <span className="profile-value">{user.lastName}</span>
+                </div>
+                <button
+                  className="profile-button"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <div className="profile-button-content">
+                    <FaEdit />
+                    <span className="profile-button-text">Change</span>
+                  </div>
+                </button>
+              </div>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Email:</span>
+                  <span className="profile-value">{user.email}</span>
+                </div>
+                <button
+                  className="profile-button"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <div className="profile-button-content">
+                    <FaEdit />
+                    <span className="profile-button-text">Change</span>
+                  </div>
+                </button>
+              </div>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Phone:</span>
+                  <span className="profile-value">{user.phone}</span>
+                </div>
+                <button
+                  className="profile-button"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <div className="profile-button-content">
+                    <FaEdit />
+                    <span className="profile-button-text">Change</span>
+                  </div>
+                </button>
+              </div>
+              <div className="profile-item">
+                <div className="profile-info">
+                  <span className="profile-label">Password:</span>
+                  <span className="profile-value">********</span>{" "}
+                </div>
+                <button
+                  className="profile-button"
+                  onClick={() => setIsEditing(true)}
+                >
+                  <div className="profile-button-content">
+                    <FaEdit />
+                    <span className="profile-button-text">Change</span>
+                  </div>
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
-      {error && <p className="error">{error}</p>}
     </div>
   );
 };

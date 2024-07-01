@@ -67,11 +67,11 @@ const FlightBook = () => {
   };
 
   const handleOriginCityChange = (event, value) => {
-    setOriginCity(value.airport);
+    setOriginCity(value.country + " (" + value.airport + ")");
   };
 
   const handleTravelCityChange = (event, value) => {
-    setTravelCity(value.airport);
+    setTravelCity(value.country + " (" + value.airport + ")");
   };
 
   const handleDepartDateChange = (event) => {
@@ -273,7 +273,7 @@ const FlightBook = () => {
                       sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                       {...props}
                     >
-                      {option.airport} ({option.country}) {option.iata_code}
+                      {option.country} ({option.airport})
                     </Box>
                   )}
                   renderInput={(params) => (
@@ -302,7 +302,7 @@ const FlightBook = () => {
                       sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
                       {...props}
                     >
-                      {option.airport} ({option.country}) {option.iata_code}
+                      {option.country} ({option.airport})
                     </Box>
                   )}
                   renderInput={(params) => (
@@ -388,7 +388,7 @@ const FlightBook = () => {
             <h3>Search Flights & places to our most popular destinations</h3>
           </div>
           <div className="suggest">
-            {hotelData.map((country, countryIndex) =>
+            {/* {hotelData.map((country, countryIndex) =>
               country.Cities.map((city, cityIndex) =>
                 city.Hotels.map((hotel, hotelIndex) => (
                   <div
@@ -405,7 +405,7 @@ const FlightBook = () => {
                   </div>
                 ))
               )
-            )}
+            )} */}
           </div>
         </div>
       </div>

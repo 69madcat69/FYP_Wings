@@ -1,34 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Alert } from "@mui/material";
 import "./Login2.css";
 import Image from "../../assets/1.jpg";
+import AuthContext from "../../../functions/Authprovider/authprovider";
 
 axios.defaults.xsrfCookieName = "csrftoken";
 axios.defaults.xsrfHeaderName = "X-CSRFToken";
 axios.defaults.withCredentials = true;
 
 function Login2() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigateTo = useNavigate();
+  const { loginUser } = useContext(AuthContext);
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/user");
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        }
-      } catch (err) {
-        setIsAuthenticated(false);
-      }
-    };
-    checkAuthStatus();
-  }, []);
+  // useEffect(() => {
+  //   const checkAuthStatus = async () => {
+  //     try {
+  //       const response = await axios.get("http://127.0.0.1:8000/api/user");
+  //       if (response.status === 200) {
+  //         setIsAuthenticated(true);
+  //       }
+  //     } catch (err) {
+  //       setIsAuthenticated(false);
+  //     }
+  //   };
+  //   checkAuthStatus();
+  // }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,26 +43,35 @@ function Login2() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      console.log("Attempting login with:", email, password); // Debugging log
-      const response = await axios.post("http://127.0.0.1:8000/api/login", {
-        email,
-        password,
-      });
-      console.log("Login response:", response); // Debugging log
-      if (response.status === 200) {
-        setIsAuthenticated(true);
-        navigateTo("/Profile");
-      }
-    } catch (err) {
-      console.error("Login failed:", err);
-      setError("Email or password is incorrect.");
-    }
+
+    // const email = e.target.email.value
+    // const password = e.target.password.value
+
+    loginUser(email, password);
   };
 
-  if (isAuthenticated) {
-    return navigateTo("/Profile");
-  }
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     console.log("Attempting login with:", email, password); // Debugging log
+  //     const response = await axios.post("http://127.0.0.1:8000/api/login", {
+  //       email,
+  //       password,
+  //     });
+  //     console.log("Login response:", response); // Debugging log
+  //     if (response.status === 200) {
+  //       setIsAuthenticated(true);
+  //       navigateTo("/Profile");
+  //     }
+  //   } catch (err) {
+  //     console.error("Login failed:", err);
+  //     setError("Email or password is incorrect.");
+  //   }
+  // };
+
+  // if (isAuthenticated) {
+  //   return navigateTo("/Profile");
+  // }
 
   return (
     <div className="MainLogin">
@@ -88,7 +99,7 @@ function Login2() {
                 <input
                   type="password"
                   name="password"
-                  placeholder="*********"
+                  placeholder="*******"
                   value={password}
                   onChange={handleInputChange}
                   required

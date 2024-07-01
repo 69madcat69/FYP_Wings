@@ -7,7 +7,6 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 
 class BookingAdmin(admin.ModelAdmin):
-    list_editable = ['verified']
-    list_display = ['full_name', 'user', 'verified']
+    list_display = ['id', 'user']
 
 admin.site.register(Booking, BookingAdmin)

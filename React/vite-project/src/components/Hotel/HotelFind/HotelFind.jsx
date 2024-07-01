@@ -14,23 +14,11 @@ import { GiCommercialAirplane } from "react-icons/gi";
 import "./HotelFind.css";
 import Logo from "../../assets/L1.jpg";
 import Fly1 from "../../assets/BUDGETAIR.png";
-import hotelData from "../../../functions/HotelData";
 
 const HotelFind = () => {
-  const star = 3;
-
-  const labels = {
-    1: "Useless+",
-    2: "Poor+",
-    3: "Ok+",
-    4: "Good+",
-    5: "Excellent+",
-  };
-
   const [hotels, setHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { travelCity, checkInDate, checkOutDate } = useParams();
   const [destinationCity, setDestinationCity] = useState("");
   const [checkIn, setCheckIn] = useState(new Date().toISOString().slice(0, 10));
   const [checkOut, setCheckOut] = useState(
@@ -41,22 +29,19 @@ const HotelFind = () => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(1000);
   const [departure, setDeparture] = useState([1, 12]);
+  const { travelCity, checkInDate, checkOutDate } = useParams();
 
   useEffect(() => {
-    const fetchData = async () => {
-      console.log(
-        "Fetching data for " + travelCity + checkInDate + checkOutDate
-      );
+    const fetchHotels = async () => {
       try {
-        // const response = await axios.get("http://127.0.0.1:8000/api/gethotel", {
-        //   params: {
-        //     location: travelCity || "kuala",
-        //     check_in: checkInDate || "2024-11-17",
-        //     check_out: checkOutDate || "2024-11-18",
-        //   },
-        // });
-        setHotels(hotelData[0].data.result);
-        console.log("Response data: " + hotels);
+        const response = await axios.get("http://127.0.0.1:8000/api/gethotel", {
+          params: {
+            city: travelCity,
+            arrival_date: checkInDate,
+            departure_date: checkOutDate,
+          },
+        });
+        setHotels(response.data.hotels);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -64,7 +49,7 @@ const HotelFind = () => {
       }
     };
 
-    fetchData();
+    fetchHotels();
   }, [travelCity, checkInDate, checkOutDate]);
 
   const handleDestinationCityChange = (event) => {
@@ -80,30 +65,41 @@ const HotelFind = () => {
   };
 
   const handleChange = (event, newValue) => {
-    if (newValue[0] > newValue[1]) {
-      setMinPrice(newValue[1]);
-      setMaxPrice(newValue[0]);
-    } else {
-      setMinPrice(newValue[0]);
-      setMaxPrice(newValue[1]);
-    }
+    setMinPrice(newValue[0]);
+    setMaxPrice(newValue[1]);
   };
 
   const handleChange2 = (event, newDeparture) => {
     setDeparture(newDeparture);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Travel City:", destinationCity);
-    console.log("Checkin Date:", checkIn);
-    console.log("Checkout Date:", checkOut);
-    // You can perform further actions such as sending data to server, etc.
+  const convertReviewScoreToStars = (score) => {
+    return score / 2;
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/gethotel", {
+        params: {
+          city: destinationCity,
+          arrival_date: checkIn,
+          departure_date: checkOut,
+        },
+      });
+      setHotels(response.data.hotels);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -112,58 +108,9 @@ const HotelFind = () => {
   return (
     <div className="HotelFind">
       <div className="container">
-        {/* Top-container Start */}
-        {/*<div className="Search-Container">
-          <form className="form-inline" onSubmit={handleSubmit}>
-            <div className="box">
-              <label>Enter Destination</label>
-              <div className="input flex">
-                <input
-                  type="text"
-                  placeholder="Enter Destination City"
-                  value={destinationCity}
-                  onChange={handleDestinationCityChange}
-                />
-              </div>
-            </div>
-            <div className="box">
-              <label>Check In</label>
-              <div className="input flex">
-                <input
-                  type="date"
-                  value={checkIn}
-                  onChange={handleCheckInDateChange}
-                />
-              </div>
-            </div>
-            <div className="box">
-              <label>Check Out</label>
-              <div className="input flex">
-                <input
-                  type="date"
-                  value={checkOut}
-                  onChange={handleCheckoutDateChange}
-                />
-              </div>
-            </div>
-            <div className="box">
-              <label>Room & Guests</label>
-              <div className="input flex">
-                <input type="text" value="1 room, 1 guest" readOnly />
-                <IoMdArrowDropdown className="ar-icon" />
-              </div>
-            </div>
-            <div className="Search">
-              <button type="submit">
-                <IoIosSearch />
-              </button>
-            </div>
-          </form>
-        </div> */}
-        {/* Top-container End */}
         <div className="bottom-container">
           <div className="Filter-Container">
-            <form>
+            <form onSubmit={handleSubmit}>
               <h1>Filter</h1>
               <label>Price</label>
               <div className="dollar">
@@ -195,6 +142,7 @@ const HotelFind = () => {
                   valueLabelDisplay="auto"
                 />
               </Box>
+              <button type="submit">Search</button>
             </form>
           </div>
           <div className="Fox">
@@ -257,7 +205,9 @@ const HotelFind = () => {
                           >
                             <Rating
                               name="text-feedback"
-                              value={hotel.review_score}
+                              value={convertReviewScoreToStars(
+                                hotel.review_score
+                              )}
                               readOnly
                               precision={0.5}
                               emptyIcon={

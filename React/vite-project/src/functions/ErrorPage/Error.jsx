@@ -1,14 +1,20 @@
-/*eslint-disable */
+/* eslint-disable */
 import React from "react";
 import "./Error.css";
-import ErrorImg from "../../components/assets/Lost.jpg";
+import { useNavigate } from "react-router-dom";
+
 const Error = () => {
+  const navigate = useNavigate();
+
+  const handleReturnHome = () => {
+    navigate("/");
+  };
   return (
     <div className="error">
-      <div className="Main-Page">
-        <h1> Are you Lost?</h1>
-        <div className="Return-button">
-          <button>Return Home</button>
+      <div className="main-page">
+        <h1>Are you lost?</h1>
+        <div className="return-button">
+          <button onClick={handleReturnHome}>Return Home</button>
         </div>
       </div>
     </div>

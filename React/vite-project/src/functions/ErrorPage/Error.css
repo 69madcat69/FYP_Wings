@@ -1,18 +1,37 @@
 .error {
-  background: url("../assets/subscribe.jpg") center/cover no-repeat fixed;
+  background: url("../../components/assets/subscribe.jpg") center/cover
+    no-repeat fixed;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   width: 100%;
+  color: #fff;
 }
 
-.error .Main-Page {
-  background-color: #ccc;
-  padding: 50px;
-  border-radius: 7px;
+.main-page {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
 }
-.error .Return-button button {
+
+.main-page h1 {
+  margin-bottom: 20px;
+  font-size: 2.5rem;
+}
+
+.return-button button {
   color: white;
   background-color: var(--main-color);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.return-button button:hover {
+  background-color: var(--main-color-hover);
 }

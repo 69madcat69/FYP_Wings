@@ -17,9 +17,9 @@ from .manager import UserManager
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
-    firstName = models.CharField(max_length=100, default='John')  
-    lastName = models.CharField(max_length=100, default='Doe')
-    phone = models.CharField(max_length=14, default='123-456-7890')  
+    firstName = models.CharField(max_length=100 )  
+    lastName = models.CharField(max_length=100)
+    phone = models.CharField(max_length=14)  
     is_verified = models.BooleanField(default=False)
     email_token = models.CharField(max_length=100, null=True, blank=True)
     forget_password = models.CharField(max_length=100, null=True, blank=True)
@@ -31,12 +31,18 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     def bookingManager(self):
         booking = Booking.objects.get(user=self)
-
+        
 class Booking(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
-    smtg = models.CharField(max_length=1000)
-    verified = models.BooleanField(default=False)
+    user = models.ForeignKey(User, related_name='bookings', on_delete=models.CASCADE)
+    id = models.CharField(max_length=255, unique=True,primary_key=True)
+    origin = models.CharField(max_length=255)
+    destination = models.CharField(max_length=255)
+    departure_date = models.DateField()
+    return_date = models.DateField(null=True, blank=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 def create_booking(sender, instance, created, **kwargs):
     if created:

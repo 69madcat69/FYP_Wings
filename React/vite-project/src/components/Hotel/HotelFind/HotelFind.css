@@ -98,7 +98,7 @@
   margin-left: 5px;
 }
 .dollar .MuiSlider-valueLabel:after {
-  content: "$";
+  content: "RM";
   margin-left: 5px;
 }
 /* Range Slides */
@@ -196,9 +196,7 @@
   margin-left: auto;
   color: #112211;
 }
-.HotelFind .List-Container .row-1 .currency::before {
-  content: "$";
-}
+
 .HotelFind .List-Container .row-1 .currency {
   color: #ff8682;
   font-size: 20px;
